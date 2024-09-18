@@ -1,41 +1,35 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { Providers } from "./providers";
+import TopLoader from "@/components/shared/TopLoader";
+import { ThemeProvider } from "@/components/shared/theme-provider";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Xemen",
+  description:
+    "Xemen is a web3 solana ecommerce site where people can come and buy products by solana or they can list a product for selling in solana. Xemen also provides a wallet for their users. Xemen supports solana adding from solana and real-time solana transactions from buyers to sellers. It is built with Next.js, Tailwind CSS, React.js.",
+};
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="en">
-      <body>
-        <header className="border-b">
-          <nav className="container mx-auto flex items-center justify-between p-4">
-            <Link href="/" className="text-2xl font-bold">
-              MyBlog
-            </Link>
-            <div className="space-x-4">
-              <Button variant="ghost" asChild>
-                <Link href="/blogs">Blogs</Link>
-              </Button>
-              <Button variant="ghost" asChild>
-                <Link href="/publish">Publish</Link>
-              </Button>
-              <Button variant="outline" asChild>
-                <Link href="/login">Login</Link>
-              </Button>
-              <Button asChild>
-                <Link href="/signup">Sign Up</Link>
-              </Button>
-            </div>
-          </nav>
-        </header>
-        <main className="container mx-auto p-4">{children}</main>
-        <footer className="border-t">
-          <div className="container mx-auto p-4 text-center text-sm text-gray-500">
-            © 2023 MyBlog. All rights reserved.
-          </div>
-        </footer>
+      <TopLoader />
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
