@@ -8,9 +8,8 @@ import { ThemeProvider } from "@/components/shared/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Xemen",
-  description:
-    "Xemen is a web3 solana ecommerce site where people can come and buy products by solana or they can list a product for selling in solana. Xemen also provides a wallet for their users. Xemen supports solana adding from solana and real-time solana transactions from buyers to sellers. It is built with Next.js, Tailwind CSS, React.js.",
+  title: "MindScribe",
+  description: "Hui hui",
 };
 
 export default function RootLayout({
@@ -20,17 +19,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <TopLoader />
-      <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
-      </body>
+      <Providers>
+        <TopLoader />
+        <body className={inter.className}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </body>
+      </Providers>
     </html>
   );
 }

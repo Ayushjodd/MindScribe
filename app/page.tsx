@@ -1,21 +1,13 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import NavBar from "@/components/shared/NavBar";
+import Main from "@/components/shared/Main";
+import Footer from "@/components/shared/Footer";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen py-12 text-center">
-      <h1 className="text-4xl font-bold mb-4">Welcome to MyBlog</h1>
-      <p className="text-xl mb-8 max-w-2xl">
-        Discover stories, thinking, and expertise from writers on any topic.
-      </p>
-      <div className="space-x-4">
-        <Button asChild>
-          <Link href="/signup">Start Writing</Link>
-        </Button>
-        <Button variant="outline" asChild>
-          <Link href="/blogs">Start Reading</Link>
-        </Button>
-      </div>
+    <div className="flex flex-col min-h-screen">
+      <NavBar />
+      <Main />
+      <Footer />
     </div>
   );
 }

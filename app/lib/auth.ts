@@ -1,73 +1,51 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import prisma from "../../db/db";
-import { Session, User } from "next-auth";
-import { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+// lib/auth.ts
 
-export interface CustomSession extends Session {
-  user: {
-    email: string;
-    name: string;
-    image: string;
-    uid: string;
-  };
-}
+import NextAuth, { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
+import EmailProvider from "next-auth/providers/email";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import prisma from "../../db/db"; // Import your Prisma instance
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
-
+  // Configure one or more authentication providers
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      httpOptions: {
-        timeout: 10000,
-      },
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
+    EmailProvider({
+      server: process.env.EMAIL_SERVER!,
+      from: process.env.EMAIL_FROM!,
     }),
   ],
-
+  adapter: PrismaAdapter(prisma),
+  pages: {
+    signIn: "/auth/signin", // Custom sign-in page
+  },
+  session: {
+    // eslint-disable-next-line @typescript-eslint/prefer-as-const
+    strategy: "jwt" as "jwt", // Narrow the type
+  },
   callbacks: {
-    session: async ({ session, token }): Promise<CustomSession> => {
-      const newSession = session as CustomSession;
-      if (newSession.user && token.uid) {
-        newSession.user.uid = token.uid || "";
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.sub ?? ""; // Ensure token.sub is string or empty string
       }
-      return newSession;
+      return session;
     },
-
-    jwt: async ({ token, user }) => {
+    async jwt({ token, user }) {
       if (user) {
-        token.uid = user.id;
+        token.sub = user.id; // Assign user ID to token.sub
       }
       return token;
     },
-
-    redirect: async ({ url, baseUrl }) => {
-      if (url.startsWith(baseUrl)) {
-        return url;
-      }
-      return baseUrl;
-    },
   },
-
-  session: {
-    strategy: "jwt",
-  },
-
-  pages: {
-    signIn: "/auth/signin",
-    error: "/auth/error",
-  },
-
-  events: {
-    signIn: async ({ user, account, profile }) => {
-      console.log("User signed in: ", user);
-    },
-    signOut: async ({ token }) => {
-      console.log("User signed out: ", token);
-    },
-  },
-
-  debug: process.env.NODE_ENV === "development",
 };
+
+// Export NextAuth handler
+export default NextAuth(authOptions);
