@@ -1,16 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use server";
 
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/lib/auth";
-import prisma from "@/db/db"; // Ensure this path is correct
+import prisma from "@/db/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    // Fetch the session, passing both the request and authOptions
-    const session = await getServerSession(req, authOptions);
-
+    const session = await getServerSession(authOptions);
     if (!session || !session.user) {
       return NextResponse.json(
         {
@@ -21,9 +18,34 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const userId = session.user.id; // Assuming your session object includes the user ID
+    const email = session.user.email;
 
-    // Parse the request body
+    if (!email) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Unable to identify the user.",
+        },
+        { status: 401 }
+      );
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "User not found.",
+        },
+        { status: 404 }
+      );
+    }
+
+    const userId = user.id;
+
     const {
       title,
       description,
@@ -36,7 +58,6 @@ export async function POST(req: NextRequest) {
       published: boolean;
     } = await req.json();
 
-    // Validate required fields
     if (!title || !description || !content) {
       return NextResponse.json(
         { success: false, message: "Missing required fields." },
@@ -44,22 +65,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Create a new blog post
     const blog = await prisma.blog.create({
       data: {
         title,
         description,
         content,
         published,
-        author: { connect: { id: userId } }, // Use 'connect' to link to the existing User
+        author: { connect: { id: userId } },
       },
     });
 
-    // Return a success response
     return NextResponse.json({
       success: true,
       message: "Blog created successfully.",
-      blog, // Optionally return the created blog
+      blog,
     });
   } catch (e) {
     console.error("Error creating blog:", e);
