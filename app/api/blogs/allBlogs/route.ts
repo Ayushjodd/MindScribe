@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import { getServerSession } from "next-auth";
@@ -7,6 +8,7 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
+    //@ts-ignore
     const session = await getServerSession(authOptions);
 
     if (!session) {

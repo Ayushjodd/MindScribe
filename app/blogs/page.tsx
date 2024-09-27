@@ -23,8 +23,6 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-
-// Define the Blog type based on your API response
 interface Blog {
   id: string;
   title: string;
@@ -42,14 +40,13 @@ export default function BlogListing() {
   useEffect(() => {
     if (!session) {
       toast.error("Login required");
-      router.push("/auth");
     }
   }, [session, router]);
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get("/api/blogs/getBlogs");
+        const response = await axios.get("/api/blogs/allBlogs");
         if (response.status === 200) {
           setBlogs(response.data.blogs);
         }

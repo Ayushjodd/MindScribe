@@ -20,6 +20,7 @@ import { toast, useToast } from "../../hooks/use-toast";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import NavBar from "@/components/shared/NavBar";
+import axios from "axios";
 
 export default function BlogPublisher() {
   const [title, setTitle] = useState("");
@@ -32,24 +33,41 @@ export default function BlogPublisher() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulating an API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const response = await axios.post("/api/blogs/publish", {
+        title,
+        description: content.substring(0, 150),
+        content,
+        published: true,
+      });
 
-    // Here you would typically send the data to your backend
-    console.log({ title, content, author });
+      if (response.data.success) {
+        toast({
+          title: "Blog post published!",
+          description: "Your blog post has been successfully published.",
+        });
 
-    toast({
-      title: "Blog post published!",
-      description: "Your blog post has been successfully published.",
-    });
-
-    setIsSubmitting(false);
-    // Reset form fields after successful submission
-    setTitle("");
-    setContent("");
-    setAuthor("");
+        setTitle("");
+        setContent("");
+        setAuthor("");
+      } else {
+        toast({
+          title: "Error",
+          description: response.data.message || "Failed to publish blog.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An error occurred while publishing the blog.",
+        variant: "destructive",
+      });
+      console.error("Error publishing blog:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-
   return (
     <>
       <NavBar />

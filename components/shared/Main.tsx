@@ -75,7 +75,7 @@ const Main = () => {
           </svg>
         </div>
       </section>
-      <section className="w-[80%] mx-auto px-10 py-5 md:py-24 lg:py-32 bg-[#3b3b3b] justify-center items-center rounded-2xl">
+      <section className="w-[80%] mx-auto px-10 py-5 md:py-24 lg:py-32 border-b justify-center items-center rounded-2xl">
         <div className="container px-4 md:px-6">
           <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center  mb-12 dark:text-white">
             Why Choose Us?
