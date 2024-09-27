@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use server";
 
 import { getServerSession } from "next-auth/next";
@@ -7,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
+    //@ts-ignore
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
       return NextResponse.json(
