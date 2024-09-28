@@ -19,6 +19,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast, useToast } from "../../hooks/use-toast";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Select,
+  SelectItem,
+  SelectTrigger,
+  SelectContent,
+  SelectValue,
+} from "@/components/ui/select";
 import NavBar from "@/components/shared/NavBar";
 import axios from "axios";
 
@@ -26,6 +33,7 @@ export default function BlogPublisher() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
+  const [category, setCategory] = useState(""); // New state for category
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
@@ -38,6 +46,8 @@ export default function BlogPublisher() {
         title,
         description: content.substring(0, 150),
         content,
+        author,
+        category, // Include category in the request
         published: true,
       });
 
@@ -50,6 +60,7 @@ export default function BlogPublisher() {
         setTitle("");
         setContent("");
         setAuthor("");
+        setCategory(""); // Reset category
       } else {
         toast({
           title: "Error",
@@ -68,6 +79,7 @@ export default function BlogPublisher() {
       setIsSubmitting(false);
     }
   };
+
   return (
     <>
       <NavBar />
@@ -120,6 +132,21 @@ export default function BlogPublisher() {
                         required
                       />
                     </div>
+                    <div className="flex flex-col space-y-1.5">
+                      <Label htmlFor="category">Category</Label>
+                      <Select
+                        onValueChange={(value: string) => setCategory(value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Technology">Technology</SelectItem>
+                          <SelectItem value="Health">Health</SelectItem>
+                          <SelectItem value="Finance">Finance</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </form>
               </CardContent>
@@ -135,7 +162,9 @@ export default function BlogPublisher() {
             <Card>
               <CardHeader>
                 <CardTitle>{title || "Your Blog Title"}</CardTitle>
-                <CardDescription>By {author || "Author Name"}</CardDescription>
+                <CardDescription>
+                  By {author || "Author Name"} in {category || "Category"}
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {content ? (
