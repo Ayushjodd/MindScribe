@@ -98,12 +98,12 @@ export default function BlogListing() {
       <NavBar />
       <div className="container mx-auto px-4 py-8 ">
         <motion.h1
-          className="text-4xl font-bold mb-8 text-center"
+          className="text-4xl mb-8 text-center pointer-events-none z-10 h-full whitespace-pre-wrap bg-gradient-to-br from-[#ff2975] from-35% to-[#00FFF1] bg-clip-text font-bold leading-none tracking-tighter text-transparent dark:drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          Explore Our Blog
+          Explore Our Blogs
         </motion.h1>
 
         <motion.div

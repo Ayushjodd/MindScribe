@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,17 +28,65 @@ import {
 } from "@/components/ui/select";
 import NavBar from "@/components/shared/NavBar";
 import axios from "axios";
+import confetti from "canvas-confetti";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function BlogPublisher() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
-  const [category, setCategory] = useState(""); // New state for category
+  const [category, setCategory] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const [showConfetti, setShowConfetti] = useState(false);
+
+  useEffect(() => {
+    if (showConfetti) {
+      const colors = ["#bb0000", "#ffffff"];
+      let animationFrame: number;
+
+      const frame = () => {
+        confetti({
+          particleCount: 2,
+          angle: 60,
+          spread: 55,
+          startVelocity: 60,
+          origin: { x: 0, y: 0.5 },
+          colors: colors,
+        });
+        confetti({
+          particleCount: 2,
+          angle: 120,
+          spread: 55,
+          startVelocity: 60,
+          origin: { x: 1, y: 0.5 },
+          colors: colors,
+        });
+
+        animationFrame = requestAnimationFrame(frame);
+      };
+
+      frame();
+
+      setTimeout(() => {
+        cancelAnimationFrame(animationFrame);
+        setShowConfetti(false);
+      }, 4000);
+    }
+  }, [showConfetti]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!title || !content || !author || !category) {
+      toast({
+        title: "All fields are required",
+        description: "Please fill out all the fields before publishing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -47,7 +95,7 @@ export default function BlogPublisher() {
         description: content.substring(0, 150),
         content,
         author,
-        category, // Include category in the request
+        category,
         published: true,
       });
 
@@ -57,10 +105,13 @@ export default function BlogPublisher() {
           description: "Your blog post has been successfully published.",
         });
 
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 5000);
+
         setTitle("");
         setContent("");
         setAuthor("");
-        setCategory(""); // Reset category
+        setCategory("");
       } else {
         toast({
           title: "Error",
@@ -82,8 +133,10 @@ export default function BlogPublisher() {
 
   return (
     <>
+      <Toaster />
       <NavBar />
       <div className="container mx-auto px-4 py-8">
+        {showConfetti && <div id="confetti" />}
         <h1 className="text-3xl font-bold mb-8">Publish Your Blog</h1>
         <Tabs defaultValue="write">
           <TabsList className="grid w-full grid-cols-2">
@@ -136,6 +189,7 @@ export default function BlogPublisher() {
                       <Label htmlFor="category">Category</Label>
                       <Select
                         onValueChange={(value: string) => setCategory(value)}
+                        required
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select a category" />
