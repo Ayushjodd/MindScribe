@@ -1,19 +1,25 @@
+"use client";
 /* eslint-disable @next/next/no-img-element */
 import React from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import Link from "next/link";
 import Image from "next/image";
+import { RainbowButton } from "../magicui/RaindowButton";
+import { MagicCard } from "../magicui/MagicCard";
+
 import {
-  Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Zap, Users, BookOpen } from "lucide-react";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 
 const Main = () => {
+  const router = useRouter();
   return (
     <main className="flex-1 ">
       <section className="relative w-full py-12 md:py-24 lg:py-32 xl:py-32 min-h-screen flex items-center">
@@ -42,19 +48,16 @@ const Main = () => {
               </p>
             </div>
             <div className="space-y-4 sm:space-y-0 sm:space-x-4">
-              <Button
-                size="lg"
-                className="bg-white text-black hover:bg-gray-200"
+              <RainbowButton
+                onClick={() => {
+                  router.push("/blogs");
+                }}
               >
-                Get Started
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-white border-white hover:bg-white hover:text-black"
-              >
-                Learn More
-              </Button>
+                Start Reading
+                <span>
+                  <ArrowRightIcon className="ml-1 size-4 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5 " />
+                </span>
+              </RainbowButton>
             </div>
           </div>
         </div>
@@ -80,43 +83,37 @@ const Main = () => {
           <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center  mb-12 dark:text-white">
             Why Choose Us?
           </h2>
-          <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
-            <Card>
-              <CardHeader>
+          <div className="grid gap-6 lg:grid-cols-3 lg:gap-12 ">
+            <MagicCard>
+              <div className="p-4 ">
                 <Zap className="w-8 h-8 mb-2" />
-                <CardTitle>Easy to Use</CardTitle>
-              </CardHeader>
-              <CardContent>
+                <h3 className="text-xl font-bold">Easy to Use</h3>
                 <p>
                   Our intuitive platform makes it simple to start writing and
                   sharing your ideas with the world.
                 </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
+              </div>
+            </MagicCard>
+            <MagicCard>
+              <div className="p-4">
                 <Users className="w-8 h-8 mb-2" />
-                <CardTitle>Vibrant Community</CardTitle>
-              </CardHeader>
-              <CardContent>
+                <h3 className="text-xl font-bold">Vibrant Community</h3>
                 <p>
                   Connect with like-minded individuals and grow your audience
                   with our engaged community.
                 </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
+              </div>
+            </MagicCard>
+            <MagicCard>
+              <div className="p-4">
                 <BookOpen className="w-8 h-8 mb-2" />
-                <CardTitle>Rich Content</CardTitle>
-              </CardHeader>
-              <CardContent>
+                <h3 className="text-xl font-bold">Rich Content</h3>
                 <p>
                   From articles to stories, our platform supports various
                   content types to suit your creative needs.
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </MagicCard>
           </div>
         </div>
       </section>
@@ -127,7 +124,7 @@ const Main = () => {
           </h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 justify-center ">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Card className="dark:bg-[#0d1016]" key={i}>
+              <MagicCard key={i} className="dark:bg-[#0d1016]">
                 <Image
                   src={``}
                   alt="Blog post thumbnail"
@@ -145,7 +142,7 @@ const Main = () => {
                     writing industry and what it means for authors.
                   </p>
                 </CardContent>
-              </Card>
+              </MagicCard>
             ))}
           </div>
         </div>
