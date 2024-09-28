@@ -17,15 +17,13 @@ import { useRouter } from "next/navigation";
 
 const NavBar = () => {
   const { data: session } = useSession();
-  console.log({ data: session });
-  console.log(session?.user?.image);
   const router = useRouter();
   const { setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <>
-      <header className="border rounded-full mx-40 mt-8 bg-opacity-90 backdrop-blur-md shadow-sm dark:bg-[#0d1117] dark:bg-opacity-90">
+      <header className="shadow-xl shadow-[#0d1016] fixed top-0 left-0 right-0 z-50 py-3 border-b px-4 lg:px-6 h-14 flex items-center bg-white bg-opacity-90 backdrop-blur-md  dark:bg-[#0d1117] dark:bg-opacity-90">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link className="flex items-center" href="#">
@@ -37,25 +35,25 @@ const NavBar = () => {
             <nav className="hidden md:flex space-x-4">
               <Link
                 className="hover:underline text-sm font-medium text-gray-500 hover:text-primary dark:text-gray-300"
-                href="#"
+                href="/"
               >
                 Home
               </Link>
               <Link
                 className="hover:underline text-sm font-medium text-gray-500 hover:text-primary dark:text-gray-300"
-                href="#"
+                href="/blogs"
               >
                 All-Blogs
               </Link>
               <Link
                 className="hover:underline text-sm font-medium text-gray-500 hover:text-primary dark:text-gray-300"
-                href="#"
+                href="/publish"
               >
                 Publish
               </Link>
               <Link
                 className="hover:underline text-sm font-medium text-gray-500 hover:text-primary dark:text-gray-300"
-                href="#"
+                href="/about"
               >
                 About
               </Link>
@@ -129,9 +127,8 @@ const NavBar = () => {
           </div>
         </div>
 
-        {/* Mobile menu */}
         {isMenuOpen && (
-          <div className="md:hidden">
+          <div className="md:hidden absolute top-14 left-0 right-0 bg-white dark:bg-[#0d1117] shadow-md">
             <div className="px-4 pt-2 pb-3 space-y-1 sm:px-3">
               <Link
                 className="hover:underline block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
@@ -200,6 +197,8 @@ const NavBar = () => {
           </div>
         )}
       </header>
+      <div className="h-14"></div>{" "}
+      {/* Spacer to prevent content from going under the navbar */}
     </>
   );
 };
