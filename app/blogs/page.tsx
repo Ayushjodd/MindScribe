@@ -23,12 +23,22 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+
+interface Author {
+  id: string;
+  username: string;
+  name: string;
+  profilePicture: string;
+}
+
 interface Blog {
   id: string;
   title: string;
   description: string;
-  author: string;
+  author: Author;
   createdAt: string;
+  likes: number;
+  category: string;
 }
 
 export default function BlogListing() {
@@ -57,6 +67,21 @@ export default function BlogListing() {
     fetchData();
   }, []);
 
+  const handleLike = async (blogId: string, index: number) => {
+    try {
+      const response = await axios.post("/api/blogs/like", { blogId });
+
+      if (response.status === 200) {
+        const updatedBlogs = [...blogs];
+        updatedBlogs[index].likes = response.data.likes;
+        setBlogs(updatedBlogs);
+        toast.success("Liked!");
+      }
+    } catch (error) {
+      toast.error("Error liking the blog");
+    }
+  };
+
   if (status === "loading") {
     return null;
   }
@@ -71,7 +96,7 @@ export default function BlogListing() {
     <>
       <Toaster />
       <NavBar />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 ">
         <motion.h1
           className="text-4xl font-bold mb-8 text-center"
           initial={{ opacity: 0, y: -20 }}
@@ -102,7 +127,7 @@ export default function BlogListing() {
         <div className="space-y-8">
           {filteredPosts.map((post, index) => (
             <motion.div
-              key={post.id} // No more 'never' type error here
+              key={post.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -111,7 +136,6 @@ export default function BlogListing() {
                 className={`overflow-hidden ${index === 0 ? "lg:flex" : ""}`}
               >
                 <div className={`${index === 0 ? "lg:w-2/3" : "w-full"}`}>
-                  {/* Placeholder for image, you can add this later */}
                   <div className="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-500">
                     Image Placeholder
                   </div>
@@ -119,7 +143,7 @@ export default function BlogListing() {
                 <div className={`${index === 0 ? "lg:w-1/3" : "w-full"}`}>
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">
-                      <Badge variant="secondary">Category Placeholder</Badge>
+                      <Badge variant="secondary">{post.category}</Badge>
                       <Button variant="ghost" size="icon">
                         <Bookmark className="h-4 w-4" />
                       </Button>
@@ -133,13 +157,18 @@ export default function BlogListing() {
                     <div className="flex items-center space-x-2">
                       <Avatar>
                         <AvatarImage
-                          src={`https://i.pravatar.cc/150?u=${post.author}`}
-                          alt={post.author}
+                          src={
+                            post.author.profilePicture ||
+                            `https://i.pravatar.cc/150?u=${post.author.id}`
+                          }
+                          alt={post.author.name || post.author.username}
                         />
-                        <AvatarFallback>{post.author[0]}</AvatarFallback>
+                        <AvatarFallback>{post.author.name[0]}</AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-medium">{post.author}</p>
+                        <p className="text-sm font-medium">
+                          {post.author.name || post.author.username}
+                        </p>
                         <p className="text-xs text-gray-500">
                           {new Date(post.createdAt).toLocaleDateString()}
                         </p>
@@ -148,12 +177,17 @@ export default function BlogListing() {
                   </CardContent>
                   <CardFooter className="flex justify-between">
                     <div className="flex space-x-2">
-                      <Button variant="ghost" size="sm">
-                        <Heart className="h-4 w-4 mr-1" />0{" "}
-                        {/* Placeholder for likes */}
+                      {/* Like Button */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleLike(post.id, index)}
+                      >
+                        <Heart className="h-4 w-4 mr-1" />
+                        {post.likes} {/* Display the current likes count */}
                       </Button>
                       <Button variant="ghost" size="sm">
-                        <MessageCircle className="h-4 w-4 mr-1" />0{" "}
+                        <MessageCircle className="h-4 w-4 mr-1" />0
                         {/* Placeholder for comments */}
                       </Button>
                     </div>
