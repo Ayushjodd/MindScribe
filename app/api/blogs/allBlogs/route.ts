@@ -28,6 +28,7 @@ export async function GET() {
         content: true,
         author: true,
         createdAt: true,
+        category: true,
       },
     });
 

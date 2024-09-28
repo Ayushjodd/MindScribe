@@ -6,6 +6,18 @@ import EmailProvider from "next-auth/providers/email";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/db/db";
 
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+    accessToken?: string;
+  }
+}
+
 export const authOptions = {
   providers: [
     GoogleProvider({
@@ -43,8 +55,10 @@ export const authOptions = {
       return token;
     },
     async session({ session, token }: any) {
-      session.user.id = token.id;
-      session.accessToken = token.accessToken;
+      if (session.user) {
+        session.user.id = token.id as string;
+      }
+      session.accessToken = token.accessToken as string | undefined;
       return session;
     },
   },
