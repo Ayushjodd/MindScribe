@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { UploadButton } from "@uploadthing/react";
+import { OurFileRouter } from "@/app/api/uploadthing/core";
 import {
   Card,
   CardContent,
@@ -33,6 +35,7 @@ import { Toaster } from "@/components/ui/toaster";
 
 export default function BlogPublisher() {
   const [title, setTitle] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
@@ -78,7 +81,7 @@ export default function BlogPublisher() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!title || !content || !author || !category) {
+    if (!title || !content || !author || !category || !imageUrl) {
       toast({
         title: "All fields are required",
         description: "Please fill out all the fields before publishing.",
@@ -97,6 +100,7 @@ export default function BlogPublisher() {
         author,
         category,
         published: true,
+        imageUrl,
       });
 
       if (response.data.success) {
@@ -112,6 +116,7 @@ export default function BlogPublisher() {
         setContent("");
         setAuthor("");
         setCategory("");
+        setImageUrl("");
       } else {
         toast({
           title: "Error",
@@ -198,8 +203,41 @@ export default function BlogPublisher() {
                           <SelectItem value="Technology">Technology</SelectItem>
                           <SelectItem value="Health">Health</SelectItem>
                           <SelectItem value="Finance">Finance</SelectItem>
+                          <SelectItem value="Finance">Politics</SelectItem>
+                          <SelectItem value="Finance">Sports</SelectItem>
+                          <SelectItem value="Finance">Geopolitics</SelectItem>
+                          <SelectItem value="Finance">Programming</SelectItem>
                         </SelectContent>
                       </Select>
+                    </div>
+                    <div className="flex flex-col space-y-1.5">
+                      <Label className="text-center" htmlFor="image">
+                        Cover Image
+                      </Label>
+                      <UploadButton<OurFileRouter>
+                        endpoint="imageUploader"
+                        onClientUploadComplete={(res: any) => {
+                          setImageUrl(res?.[0]?.url || "");
+                          toast({
+                            title: "Image uploaded successfully",
+                            description: "Your cover image has been uploaded.",
+                          });
+                        }}
+                        onUploadError={(error: Error) => {
+                          toast({
+                            title: "Error uploading image",
+                            description: error.message,
+                            variant: "destructive",
+                          });
+                        }}
+                      />
+                      {imageUrl && (
+                        <img
+                          src={imageUrl}
+                          alt="Cover"
+                          className="mt-2 max-w-xs rounded"
+                        />
+                      )}
                     </div>
                   </div>
                 </form>
@@ -221,6 +259,13 @@ export default function BlogPublisher() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                {imageUrl && (
+                  <img
+                    src={imageUrl}
+                    alt="Cover"
+                    className="mb-4 max-w-full rounded"
+                  />
+                )}
                 {content ? (
                   <div className="prose max-w-none">
                     {content.split("\n").map((paragraph, index) => (

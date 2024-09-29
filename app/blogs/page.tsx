@@ -39,6 +39,7 @@ interface Blog {
   createdAt: string;
   likes: number;
   category: string;
+  imageUrl: string;
 }
 
 export default function BlogListing() {
@@ -57,6 +58,7 @@ export default function BlogListing() {
     async function fetchData() {
       try {
         const response = await axios.get("/api/blogs/allBlogs");
+        console.log(response);
         if (response.status === 200) {
           setBlogs(response.data.blogs);
         }
@@ -70,7 +72,6 @@ export default function BlogListing() {
   const handleLike = async (blogId: string, index: number) => {
     try {
       const response = await axios.post("/api/blogs/like", { blogId });
-
       if (response.status === 200) {
         const updatedBlogs = [...blogs];
         updatedBlogs[index].likes = response.data.likes;
@@ -136,8 +137,8 @@ export default function BlogListing() {
                 className={`overflow-hidden ${index === 0 ? "lg:flex" : ""}`}
               >
                 <div className={`${index === 0 ? "lg:w-2/3" : "w-full"}`}>
-                  <div className="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-500">
-                    Image Placeholder
+                  <div className="w-full h-64  flex items-center justify-center text-gray-500">
+                    <img src={post.imageUrl || ""} />
                   </div>
                 </div>
                 <div className={`${index === 0 ? "lg:w-1/3" : "w-full"}`}>

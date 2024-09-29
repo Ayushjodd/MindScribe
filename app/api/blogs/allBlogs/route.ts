@@ -29,6 +29,7 @@ export async function GET() {
         author: true,
         createdAt: true,
         category: true,
+        imageUrl: true,
       },
     });
 

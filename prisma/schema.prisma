@@ -34,6 +34,7 @@ model Blog {
   likes       Int        @default(0)  
   likedBy     Like[]     
   category    String?
+  imageUrl    String?
 }
 
 model Like {

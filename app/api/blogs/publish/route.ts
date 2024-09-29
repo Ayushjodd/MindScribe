@@ -54,15 +54,17 @@ export async function POST(req: NextRequest) {
       description,
       content,
       published,
+      imageUrl,
     }: {
       category: string;
       title: string;
       description: string;
       content: string;
       published: boolean;
+      imageUrl: string;
     } = await req.json();
 
-    if (!title || !description || !content || !category) {
+    if (!title || !description || !content || !category || !imageUrl) {
       return NextResponse.json(
         { success: false, message: "Missing required fields." },
         { status: 400 }
@@ -77,6 +79,7 @@ export async function POST(req: NextRequest) {
         content,
         published,
         author: { connect: { id: userId } },
+        imageUrl,
       },
     });
 
