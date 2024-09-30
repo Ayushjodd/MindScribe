@@ -95,7 +95,13 @@ const NavBar = () => {
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem>{session.user?.name}</DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        router.push("/profile");
+                      }}
+                    >
+                      {session.user?.name}
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => signOut()}>
                       Sign Out
                     </DropdownMenuItem>

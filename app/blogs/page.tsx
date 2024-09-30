@@ -58,7 +58,6 @@ export default function BlogListing() {
     async function fetchData() {
       try {
         const response = await axios.get("/api/blogs/allBlogs");
-        console.log(response);
         if (response.status === 200) {
           setBlogs(response.data.blogs);
         }
