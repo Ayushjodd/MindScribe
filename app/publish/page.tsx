@@ -23,9 +23,11 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Select,
-  SelectItem,
-  SelectTrigger,
   SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import NavBar from "@/components/shared/NavBar";
@@ -203,10 +205,14 @@ export default function BlogPublisher() {
                           <SelectItem value="Technology">Technology</SelectItem>
                           <SelectItem value="Health">Health</SelectItem>
                           <SelectItem value="Finance">Finance</SelectItem>
-                          <SelectItem value="Finance">Politics</SelectItem>
-                          <SelectItem value="Finance">Sports</SelectItem>
-                          <SelectItem value="Finance">Geopolitics</SelectItem>
-                          <SelectItem value="Finance">Programming</SelectItem>
+                          <SelectItem value="Politics">Politics</SelectItem>
+                          <SelectItem value="Sports">Sports</SelectItem>
+                          <SelectItem value="Geopolitics">
+                            Geopolitics
+                          </SelectItem>
+                          <SelectItem value="Programming">
+                            Programming
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
