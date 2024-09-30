@@ -8,26 +8,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/seperator";
-import {
-  Twitter,
-  Facebook,
-  Linkedin,
-  Bookmark,
-  MessageCircle,
-} from "lucide-react";
+import { Bookmark, MessageCircle, Feather } from "lucide-react";
 import Link from "next/link";
 import NavBar from "@/components/shared/NavBar";
 import axios from "axios";
 import { useParams } from "next/navigation";
+import { BsTwitterX } from "react-icons/bs";
+import { FaLinkedin } from "react-icons/fa";
+import { FaTelegramPlane } from "react-icons/fa";
+import { FaLink } from "react-icons/fa";
 
 interface BlogPost {
   title: string;
   author: Author;
   date: string;
-  readingTime: string;
   category: string;
   content: string;
   authorBio: string;
+  imageUrl: string;
+  createdAt: string;
+  likes: number;
 }
 
 interface Author {
@@ -38,7 +38,19 @@ interface Author {
   email: string;
   emailVerified: boolean | null;
   image: string;
+  bio: string;
+  twitter: string;
+  linkedIn: string;
+  Telegram: string;
+  personalWebsite: string;
 }
+
+const calculateReadingTime = (content: string) => {
+  const wordsPerMinute = 200;
+  const textLength = content.split(/\s+/).length; // Split content by whitespace
+  const readingTime = Math.ceil(textLength / wordsPerMinute); // Calculate reading time
+  return `${readingTime} min read`;
+};
 
 export default function BlogPost() {
   const [claps, setClaps] = useState(0);
@@ -49,6 +61,7 @@ export default function BlogPost() {
   useEffect(() => {
     async function fetchData() {
       const data = await axios.get(`/api/blogs/${id}`);
+      console.log(data);
       //@ts-ignore
       setBlogData(data.data?.blog);
     }
@@ -77,7 +90,7 @@ export default function BlogPost() {
               <div className="flex items-center space-x-4 mb-6">
                 <Avatar>
                   <AvatarImage
-                    src={`https://i.pravatar.cc/150?u=${blogData.author}`}
+                    src={blogData.author.image}
                     alt={blogData.author.image}
                   />
                   <AvatarFallback>{blogData.author.image}</AvatarFallback>
@@ -87,9 +100,11 @@ export default function BlogPost() {
                     {blogData.author.name}
                   </h2>
                   <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                    <span>{blogData.date}</span>
+                    <span>
+                      {new Date(blogData.createdAt).toLocaleDateString()}
+                    </span>
                     <span className="mx-2">·</span>
-                    <span>{blogData.readingTime}</span>
+                    <span>{calculateReadingTime(blogData.content)}</span>
                   </div>
                 </div>
                 <Button
@@ -104,22 +119,47 @@ export default function BlogPost() {
               <div className="flex items-center space-x-4 mb-6">
                 <Badge variant="secondary">{blogData.category}</Badge>
                 <div className="flex space-x-2">
-                  <Button variant="ghost" size="icon">
-                    <Twitter className="h-4 w-4" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      window.open(`https://x.com/${blogData.author.twitter}`);
+                    }}
+                  >
+                    <BsTwitterX className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon">
-                    <Facebook className="h-4 w-4" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      window.open(`https://t.me/${blogData.author.Telegram}`);
+                    }}
+                  >
+                    <FaTelegramPlane className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon">
-                    <Linkedin className="h-4 w-4" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      window.open(blogData.author.linkedIn);
+                    }}
+                  >
+                    <FaLinkedin className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      window.open(blogData.author.personalWebsite);
+                    }}
+                  >
+                    <FaLink />
                   </Button>
                 </div>
               </div>
 
               <img
-                src={
-                  "https://images.unsplash.com/photo-1727365179327-b69df6a52fed?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxM3x8fGVufDB8fHx8fA%3D%3D"
-                }
+                src={blogData.imageUrl}
                 alt={blogData.title}
                 width={1200}
                 height={600}
@@ -163,10 +203,10 @@ export default function BlogPost() {
                 </Avatar>
                 <div>
                   <h3 className="text-lg font-semibold">
-                    {blogData.author.name}
+                    Written by {blogData.author.name}
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 mb-2">
-                    {blogData.authorBio}
+                    {blogData.author.bio}
                   </p>
                   <Button
                     variant={isFollowing ? "secondary" : "default"}
@@ -184,9 +224,12 @@ export default function BlogPost() {
             <div className="container mx-auto px-4 py-8">
               <div className="flex flex-col md:flex-row justify-between items-center">
                 <div className="mb-4 md:mb-0">
-                  <h3 className="text-xl font-bold text-primary dark:text-primary-foreground mb-2">
-                    MyBlog
-                  </h3>
+                  <Link className="flex items-center" href="#">
+                    <Feather className="h-8 w-8 text-primary" />
+                    <span className="ml-2 text-xl font-bold text-primary">
+                      MindScribe
+                    </span>
+                  </Link>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Exploring ideas, one post at a time.
                   </p>
@@ -211,9 +254,6 @@ export default function BlogPost() {
                     Contact Us
                   </Link>
                 </nav>
-              </div>
-              <div className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-                © 2023 MyBlog. All rights reserved.
               </div>
             </div>
           </footer>
