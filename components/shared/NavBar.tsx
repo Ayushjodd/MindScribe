@@ -23,7 +23,7 @@ const NavBar = () => {
 
   return (
     <>
-      <header className="shadow-xl shadow-[#0d1016] fixed top-0 left-0 right-0 z-50 py-3 border-b px-4 lg:px-6 h-14 flex items-center bg-white bg-opacity-90 backdrop-blur-md  dark:bg-[#0d1117] dark:bg-opacity-90">
+      <header className="dark:shadow-xl dark:shadow-[#0d1016] fixed top-0 left-0 right-0 z-50 py-3 border-b px-4 lg:px-6 h-14 flex items-center bg-white  backdrop-blur-md  dark:bg-[#0d1117] dark:bg-opacity-90">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link className="flex items-center" href="#">
@@ -58,12 +58,12 @@ const NavBar = () => {
                 About
               </Link>
             </nav>
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4 text-black dark:text-white">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="icon">
-                    <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                     <span className="sr-only">Toggle theme</span>
                   </Button>
                 </DropdownMenuTrigger>

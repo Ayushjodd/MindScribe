@@ -41,6 +41,7 @@ export async function GET(
         likes: true,
         likedBy: true,
         category: true,
+        imageUrl: true,
       },
     });
 
