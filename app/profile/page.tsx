@@ -7,24 +7,37 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import NavBar from "@/components/shared/NavBar";
+import { toast } from "react-hot-toast";
+import axios from "axios";
 
 export default function Component() {
-  const [profile, setProfile] = useState({
-    twitter: "",
-    bio: "",
-    portfolio: "",
-    telegram: "",
-    linkedin: "",
-  });
+  const [twitter, setTwitter] = useState("");
+  const [bio, setBio] = useState("");
+  const [personalWebsite, setPersonalWebsite] = useState("");
+  const [Telegram, setTelegram] = useState("");
+  const [linkedIn, setLinkedIn] = useState("");
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setProfile((prev) => ({ ...prev, [name]: value }));
+  const handleSubmit = async () => {
+    try {
+      const profileData = {
+        twitter,
+        bio,
+        personalWebsite,
+        Telegram,
+        linkedIn,
+      };
+      const response = await axios.post("/api/user", profileData);
+
+      if (response.status == 200) {
+        toast.success("Profile updated successfully!");
+      } else {
+        toast.error(`Failed to update profile: ${response.data.message}`);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("An error occurred. Please try again.");
+    }
   };
-
-  function handleSubmit() {}
 
   return (
     <>
@@ -44,8 +57,8 @@ export default function Component() {
                 id="twitter"
                 name="twitter"
                 placeholder="@username"
-                value={profile.twitter}
-                onChange={handleInputChange}
+                value={twitter}
+                onChange={(e) => setTwitter(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -54,8 +67,8 @@ export default function Component() {
                 id="bio"
                 name="bio"
                 placeholder="Tell us about yourself"
-                value={profile.bio}
-                onChange={handleInputChange}
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -64,8 +77,8 @@ export default function Component() {
                 id="portfolio"
                 name="portfolio"
                 placeholder="https://yourwebsite.com"
-                value={profile.portfolio}
-                onChange={handleInputChange}
+                value={personalWebsite}
+                onChange={(e) => setPersonalWebsite(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -74,8 +87,8 @@ export default function Component() {
                 id="telegram"
                 name="telegram"
                 placeholder="@telegram_username"
-                value={profile.telegram}
-                onChange={handleInputChange}
+                value={Telegram}
+                onChange={(e) => setTelegram(e.target.value)}
               />
             </div>
             <div className="space-y-2">
@@ -84,11 +97,13 @@ export default function Component() {
                 id="linkedin"
                 name="linkedin"
                 placeholder="https://linkedin.com/in/username"
-                value={profile.linkedin}
-                onChange={handleInputChange}
+                value={linkedIn}
+                onChange={(e) => setLinkedIn(e.target.value)}
               />
             </div>
-            <Button className="w-full">Save Profile</Button>
+            <Button onClick={handleSubmit} className="w-full">
+              Save Profile
+            </Button>
           </motion.div>
         </div>
       </div>
