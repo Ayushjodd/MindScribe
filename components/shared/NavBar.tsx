@@ -14,6 +14,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRouter } from "next/navigation";
+import { FaRegBookmark } from "react-icons/fa6";
+import { FaRegUser } from "react-icons/fa";
+import { PiSignOutBold } from "react-icons/pi";
 
 const NavBar = () => {
   const { data: session } = useSession();
@@ -100,10 +103,32 @@ const NavBar = () => {
                         router.push("/profile");
                       }}
                     >
-                      {session.user?.name}
+                      <div className="flex">
+                        <span className="mr-2 text-lg">
+                          <FaRegUser />
+                        </span>
+                        Profile
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        router.push("/bookmarks");
+                      }}
+                    >
+                      <div className="flex">
+                        <span className="mr-2 text-lg">
+                          <FaRegBookmark />
+                        </span>
+                        BookMarks
+                      </div>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => signOut()}>
-                      Sign Out
+                      <div className="flex">
+                        <span className="mr-2 text-lg">
+                          <PiSignOutBold />
+                        </span>
+                        Sign Out{" "}
+                      </div>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
