@@ -83,6 +83,15 @@ export default function BlogListing() {
     }
   };
 
+  const handleBookmark = async (blogId: string) => {
+    try {
+      const res = await axios.post("/api/blogs/bookmark", { blogId });
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   if (status === "loading") {
     return null;
   }
@@ -145,7 +154,13 @@ export default function BlogListing() {
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">
                         <Badge variant="secondary">{post.category}</Badge>
-                        <Button variant="ghost" size="icon">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            handleBookmark(post.id);
+                          }}
+                        >
                           <Bookmark className="h-5 w-5" />
                         </Button>
                       </div>
