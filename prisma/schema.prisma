@@ -27,6 +27,8 @@ model User {
   image           String?
   accounts        Account[]
   sessions        Session[]
+  followers       Follow[]  @relation("UserFollowers") // Users following this user
+  following       Follow[]  @relation("UserFollowing") // Users this user is following
 }
 
 model Blog {
@@ -63,6 +65,18 @@ model Bookmark {
   blogId    Int
 
   @@unique([userId, blogId])
+}
+
+model Follow {
+  id         Int    @id @default(autoincrement())
+  follower   User   @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId String
+  following  User   @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String
+
+  createdAt  DateTime @default(now())
+
+  @@unique([followerId, followingId]) // Ensures a user can't follow another user multiple times
 }
 
 model Account {

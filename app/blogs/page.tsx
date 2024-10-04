@@ -175,7 +175,12 @@ export default function BlogListing() {
                           <AvatarImage src={post.author.image} />
                         </Avatar>
                         <div>
-                          <p className="text-sm font-medium">
+                          <p
+                            onClick={() =>
+                              router.push(`/user/${post.author.id}`)
+                            }
+                            className="hover:underline cursor-pointer text-sm font-medium"
+                          >
                             {post.author.name || post.author.username}
                           </p>
                           <p className="text-xs text-gray-500">
