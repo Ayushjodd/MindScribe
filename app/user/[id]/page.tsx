@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
+
 import {
   Card,
   CardContent,
@@ -21,6 +23,76 @@ import { FaXTwitter } from "react-icons/fa6";
 import { FaLinkedin } from "react-icons/fa";
 import { FaLink } from "react-icons/fa6";
 
+interface User {
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  imageUrl: string;
+  profilePicture: string | null;
+  bio: string | null;
+  twitter: string | null;
+  linkedIn: string | null;
+  personalWebsite: string | null;
+  Telegram: string | null;
+  posts: Post[];
+  likes: LikedBlog[];
+  bookmarks: BookmarkedBlog[];
+  followers: Follower[];
+  following: Following[];
+  stats: {
+    posts: number;
+    likes: number;
+    bookmarks: number;
+    followers: number;
+    following: number;
+  };
+}
+
+interface Post {
+  id: string;
+  title: string;
+  imageUrl: string | null;
+  description: string;
+  content: string;
+  published: boolean;
+  createdAt: string;
+  likes: number;
+  comments: number; // Add comments if needed
+}
+
+interface LikedBlog {
+  blog: {
+    id: string;
+    title: string;
+    imageUrl: string | null;
+    description: string;
+  };
+}
+
+interface BookmarkedBlog {
+  blog: {
+    id: string;
+    title: string;
+    imageUrl: string | null;
+    description: string;
+  };
+}
+
+interface Follower {
+  id: string;
+  name: string;
+  username: string;
+  imageUrl: string | null;
+}
+
+interface Following {
+  id: string;
+  name: string;
+  username: string;
+  imageUrl: string | null;
+}
+
 export default function UserProfilePage() {
   const [activeTab, setActiveTab] = useState("posts");
   const [userData, setUserData] = useState<User | null>(null);
@@ -28,77 +100,6 @@ export default function UserProfilePage() {
   const [error, setError] = useState("");
   const { id } = useParams();
   const router = useRouter();
-
-  // Define interfaces based on the API response
-  interface User {
-    id: string;
-    username: string;
-    name: string;
-    email: string;
-    imageUrl: string;
-    profilePicture: string | null;
-    bio: string | null;
-    twitter: string | null;
-    linkedIn: string | null;
-    personalWebsite: string | null;
-    Telegram: string | null;
-    posts: Post[];
-    likes: LikedBlog[];
-    bookmarks: BookmarkedBlog[];
-    followers: Follower[];
-    following: Following[];
-    stats: {
-      posts: number;
-      likes: number;
-      bookmarks: number;
-      followers: number;
-      following: number;
-    };
-  }
-
-  interface Post {
-    id: string;
-    title: string;
-    imageUrl: string | null;
-    description: string;
-    content: string;
-    published: boolean;
-    createdAt: string;
-    likes: number;
-    comments: number; // Add comments if needed
-  }
-
-  interface LikedBlog {
-    blog: {
-      id: string;
-      title: string;
-      imageUrl: string | null;
-      description: string;
-    };
-  }
-
-  interface BookmarkedBlog {
-    blog: {
-      id: string;
-      title: string;
-      imageUrl: string | null;
-      description: string;
-    };
-  }
-
-  interface Follower {
-    id: string;
-    name: string;
-    username: string;
-    imageUrl: string | null;
-  }
-
-  interface Following {
-    id: string;
-    name: string;
-    username: string;
-    imageUrl: string | null;
-  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -148,19 +149,24 @@ export default function UserProfilePage() {
               {userData.bio}
             </p>
 
-            <div className="mb-3 ">
-              <div className="flex text-xl gap-4">
+            <div className="mb-3">
+              <div className="flex text-xl gap-4 items-center">
                 <FaXTwitter
+                  className="hover:text-blue-600 cursor-pointer "
                   onClick={() => {
                     window.open(`https://x.com/${userData.twitter}`);
                   }}
                 />
+                <Separator orientation="vertical" className="h-6 bg-gray-300" />{" "}
                 <FaLinkedin
+                  className="hover:text-blue-600 cursor-pointer "
                   onClick={() => {
                     window.open(userData.linkedIn || "https://linkedin.com");
                   }}
                 />
+                <Separator orientation="vertical" className="h-6 bg-gray-300" />{" "}
                 <FaLink
+                  className="hover:text-blue-600 cursor-pointer "
                   onClick={() => {
                     window.open(
                       userData.personalWebsite || "/humpe-to-hai-hi-naw"
@@ -169,6 +175,7 @@ export default function UserProfilePage() {
                 />
               </div>
             </div>
+
             <div className="flex justify-center space-x-4 mb-4">
               <div>
                 <span className="font-bold">{userData.stats.posts}</span> posts
@@ -214,7 +221,12 @@ export default function UserProfilePage() {
                     )}
                   </CardContent>
                   <CardFooter className="flex justify-between">
-                    <Button variant="link">Read More</Button>
+                    <Button
+                      onClick={() => router.push(`/blog/${post.id}`)}
+                      variant="link"
+                    >
+                      Read More
+                    </Button>
                     <div className="flex items-center">
                       <Heart className="mr-2" /> {post.likes}
                       <MessageCircle className="ml-4 mr-2" /> {post.comments}
