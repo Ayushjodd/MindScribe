@@ -16,6 +16,7 @@ export default function Component() {
   const [personalWebsite, setPersonalWebsite] = useState("");
   const [Telegram, setTelegram] = useState("");
   const [linkedIn, setLinkedIn] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
 
   const handleSubmit = async () => {
     try {
@@ -25,6 +26,7 @@ export default function Component() {
         personalWebsite,
         Telegram,
         linkedIn,
+        profilePicture,
       };
       const response = await axios.post("/api/user", profileData);
 
@@ -59,6 +61,16 @@ export default function Component() {
                 placeholder="@username"
                 value={twitter}
                 onChange={(e) => setTwitter(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="profile-pic">Profile Picture URL</Label>
+              <Input
+                id="pp"
+                name="pp"
+                placeholder="image'url...."
+                value={profilePicture}
+                onChange={(e) => setProfilePicture(e.target.value)}
               />
             </div>
             <div className="space-y-2">

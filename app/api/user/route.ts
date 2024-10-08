@@ -25,12 +25,14 @@ export async function POST(req: NextRequest) {
       personalWebsite,
       Telegram,
       bio,
+      profilePicture,
     }: {
       twitter: string;
       linkedIn: string;
       personalWebsite: string;
       Telegram: string;
       bio: string;
+      profilePicture: string;
     } = await req.json();
 
     const updatedUser = await prisma.user.update({
@@ -41,6 +43,7 @@ export async function POST(req: NextRequest) {
         personalWebsite,
         Telegram,
         bio,
+        profilePicture,
       },
     });
 

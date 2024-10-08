@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -29,6 +27,7 @@ interface Author {
   username: string;
   name: string;
   image: string;
+  profilePicture: string | null;
 }
 
 interface Blog {
@@ -47,27 +46,47 @@ export default function BlogListing() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const router = useRouter();
   const { data: session, status } = useSession();
+  const [bookmarkedBlogs, setBookmarkedBlogs] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!session) {
       toast.error("Login required");
     }
-  }, [session, router]);
+  }, [session]);
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true);
       try {
-        const response = await axios.get("/api/blogs/allBlogs");
-        console.log(response);
-        if (response.status === 200) {
-          setBlogs(response.data.blogs);
+        const [blogsResponse, bookmarksResponse] = await Promise.all([
+          axios.get("/api/blogs/allBlogs"),
+          session
+            ? axios.get("/api/blogs/bookmark")
+            : Promise.resolve({ data: { bookmarks: [] } }),
+        ]);
+
+        if (blogsResponse.status === 200) {
+          setBlogs(blogsResponse.data.blogs);
+          console.log(blogsResponse.data.blogs);
+        }
+
+        if (bookmarksResponse.data && bookmarksResponse.data.bookmarks) {
+          const bookmarkIds = bookmarksResponse.data.bookmarks.map(
+            (bookmark: any) => bookmark.blogId
+          );
+          setBookmarkedBlogs(bookmarkIds);
         }
       } catch (error) {
-        toast.error("Error fetching blogs");
+        console.error("Error fetching data:", error);
+        toast.error("Error fetching blogs and bookmarks");
+      } finally {
+        setIsLoading(false);
       }
     }
+
     fetchData();
-  }, []);
+  }, [session]);
 
   const handleLike = async (blogId: string, index: number) => {
     try {
@@ -86,14 +105,21 @@ export default function BlogListing() {
   const handleBookmark = async (blogId: string) => {
     try {
       const res = await axios.post("/api/blogs/bookmark", { blogId });
-      console.log(res);
+      if (res.data.message.includes("added")) {
+        setBookmarkedBlogs((prev) => [...prev, blogId]);
+        toast.success("Blog bookmarked");
+      } else {
+        setBookmarkedBlogs((prev) => prev.filter((id) => id !== blogId));
+        toast.success("Bookmark removed");
+      }
     } catch (e) {
-      console.log(e);
+      console.error("Error bookmarking the blog:", e);
+      toast.error("Error bookmarking the blog");
     }
   };
 
-  if (status === "loading") {
-    return null;
+  if (status === "loading" || isLoading) {
+    return;
   }
 
   const filteredPosts = blogs.filter(
@@ -106,7 +132,7 @@ export default function BlogListing() {
     <>
       <Toaster />
       <NavBar />
-      <div className="w-full h-full  dark:bg-black bg-white">
+      <div className="w-full h-full dark:bg-black bg-white">
         <div className="container mx-auto px-4 py-8">
           <motion.h1
             className="text-4xl mb-8 text-center pointer-events-none z-10 h-full whitespace-pre-wrap bg-gradient-to-br from-[#ff2975] from-35% to-[#00FFF1] bg-clip-text font-bold leading-none tracking-tighter text-transparent dark:drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)"
@@ -144,24 +170,28 @@ export default function BlogListing() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <Card className="overflow-hidden lg:flex">
-                  <div className=" w-full">
-                    <div className="w-full h-full flex  text-gray-500">
+                  <div className="w-full">
+                    <div className="w-full h-full flex text-gray-500">
                       <img src={post.imageUrl || ""} alt={post.title} />
                     </div>
                   </div>
 
-                  <div className=" w-full p-4">
+                  <div className="w-full p-4">
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">
                         <Badge variant="secondary">{post.category}</Badge>
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => {
-                            handleBookmark(post.id);
-                          }}
+                          onClick={() => handleBookmark(post.id)}
                         >
-                          <Bookmark className="h-5 w-5" />
+                          <Bookmark
+                            className={`h-5 w-5 ${
+                              bookmarkedBlogs.includes(post.id)
+                                ? "text-blue-500"
+                                : "text-gray-500"
+                            }`}
+                          />
                         </Button>
                       </div>
                       <CardTitle className="text-3xl font-bold mb-2">
@@ -172,7 +202,12 @@ export default function BlogListing() {
                     <CardContent>
                       <div className="flex items-center space-x-3">
                         <Avatar>
-                          <AvatarImage src={post.author.image} />
+                          <AvatarImage
+                            src={
+                              post?.author?.profilePicture || post.author.image
+                            }
+                          />
+                          <AvatarFallback>{post.author.name[0]}</AvatarFallback>
                         </Avatar>
                         <div>
                           <p
@@ -197,11 +232,10 @@ export default function BlogListing() {
                           onClick={() => handleLike(post.id, index)}
                         >
                           <Heart className="h-5 w-5 mr-1" />
-                          {post.likes} {/* Display the current likes count */}
+                          {post.likes}
                         </Button>
                         <Button variant="ghost" size="sm">
                           <MessageCircle className="h-5 w-5 mr-1" />0
-                          {/* Placeholder for comments */}
                         </Button>
                       </div>
                       <Button variant="default" size="lg">
