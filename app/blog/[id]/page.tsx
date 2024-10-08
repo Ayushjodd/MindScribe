@@ -17,6 +17,8 @@ import { BsTwitterX } from "react-icons/bs";
 import { FaLinkedin } from "react-icons/fa";
 import { FaTelegramPlane } from "react-icons/fa";
 import { FaLink } from "react-icons/fa";
+import Footer from "@/components/shared/Footer";
+import { useSession } from "next-auth/react";
 
 interface BlogPost {
   title: string;
@@ -57,11 +59,11 @@ export default function BlogPost() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [blogData, setBlogData] = useState<BlogPost | null>(null);
   const { id } = useParams();
+  const session: any = useSession();
 
   useEffect(() => {
     async function fetchData() {
       const data = await axios.get(`/api/blogs/${id}`);
-      console.log(data);
       //@ts-ignore
       setBlogData(data.data?.blog);
     }
@@ -69,7 +71,29 @@ export default function BlogPost() {
   }, [id]);
 
   if (!blogData) {
-    return <p>Loading...</p>;
+    return;
+  }
+
+  async function handleFollow() {
+    if (!session?.data.user?.id) {
+      console.log("User must be logged in to follow");
+      return;
+    }
+
+    try {
+      const response = await axios.post("/api/follow", {
+        followerId: session.data.user.id,
+        followingId: blogData?.author.id,
+      });
+
+      if (response.data.message.includes("Unfollowed")) {
+        setIsFollowing(false);
+      } else {
+        setIsFollowing(true);
+      }
+    } catch (error) {
+      console.error("Error following/unfollowing user:", error);
+    }
   }
 
   return (
@@ -110,7 +134,7 @@ export default function BlogPost() {
                 <Button
                   variant={isFollowing ? "secondary" : "default"}
                   size="sm"
-                  onClick={() => setIsFollowing(!isFollowing)}
+                  onClick={handleFollow}
                 >
                   {isFollowing ? "Following" : "Follow"}
                 </Button>
@@ -211,7 +235,7 @@ export default function BlogPost() {
                   <Button
                     variant={isFollowing ? "secondary" : "default"}
                     size="sm"
-                    onClick={() => setIsFollowing(!isFollowing)}
+                    onClick={handleFollow}
                   >
                     {isFollowing ? "Following" : "Follow"}
                   </Button>
@@ -220,43 +244,7 @@ export default function BlogPost() {
             </motion.article>
           </main>
 
-          <footer className="bg-gray-100 dark:bg-gray-800 mt-12 transition-colors duration-300">
-            <div className="container mx-auto px-4 py-8">
-              <div className="flex flex-col md:flex-row justify-between items-center">
-                <div className="mb-4 md:mb-0">
-                  <Link className="flex items-center" href="#">
-                    <Feather className="h-8 w-8 text-primary" />
-                    <span className="ml-2 text-xl font-bold text-primary">
-                      MindScribe
-                    </span>
-                  </Link>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Exploring ideas, one post at a time.
-                  </p>
-                </div>
-                <nav className="flex space-x-4">
-                  <Link
-                    href="/privacy"
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary-foreground"
-                  >
-                    Privacy Policy
-                  </Link>
-                  <Link
-                    href="/terms"
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary-foreground"
-                  >
-                    Terms of Service
-                  </Link>
-                  <Link
-                    href="/contact"
-                    className="text-sm text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary-foreground"
-                  >
-                    Contact Us
-                  </Link>
-                </nav>
-              </div>
-            </div>
-          </footer>
+          <Footer />
         </div>
       </div>
     </>
