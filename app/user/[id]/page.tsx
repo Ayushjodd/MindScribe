@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-
 import {
   Card,
   CardContent,
@@ -15,13 +14,20 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Grid, Heart, MessageCircle } from "lucide-react";
+import { Grid, Heart, MessageCircle, Users } from "lucide-react";
 import Image from "next/image";
 import NavBar from "@/components/shared/NavBar";
 import { useParams, useRouter } from "next/navigation";
 import { FaXTwitter } from "react-icons/fa6";
 import { FaLinkedin } from "react-icons/fa";
 import { FaLink } from "react-icons/fa6";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface User {
   id: string;
@@ -29,7 +35,7 @@ interface User {
   name: string;
   email: string;
   imageUrl: string;
-  profilePicture: string | null;
+  profilePicture: string;
   bio: string | null;
   twitter: string | null;
   linkedIn: string | null;
@@ -58,7 +64,7 @@ interface Post {
   published: boolean;
   createdAt: string;
   likes: number;
-  comments: number; // Add comments if needed
+  comments: number;
 }
 
 interface LikedBlog {
@@ -123,10 +129,9 @@ export default function UserProfilePage() {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
+  if (!userData) return <div>No user data available</div>;
 
-  if (!userData) return <div>No user data available</div>; // Handle case where userData is null
-
-  const { posts } = userData;
+  const { posts, likes } = userData;
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -137,12 +142,10 @@ export default function UserProfilePage() {
           <div className="flex flex-col items-center text-center max-w-2xl mx-auto">
             <Avatar className="h-32 w-32 mb-4">
               <AvatarImage
-                src={
-                  userData.imageUrl ||
-                  "https://i.pinimg.com/236x/5d/62/2f/5d622fd1e10c8a79b3ea7851835989c8.jpg"
-                }
+                src={userData.profilePicture}
                 alt={userData.name || "User Avatar"}
               />
+              <AvatarFallback>{userData.name?.charAt(0) || "U"}</AvatarFallback>
             </Avatar>
             <h2 className="text-2xl font-bold mb-2">{userData.name}</h2>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
@@ -152,21 +155,21 @@ export default function UserProfilePage() {
             <div className="mb-3">
               <div className="flex text-xl gap-4 items-center">
                 <FaXTwitter
-                  className="hover:text-blue-600 cursor-pointer "
+                  className="hover:text-blue-600 cursor-pointer"
                   onClick={() => {
                     window.open(`https://x.com/${userData.twitter}`);
                   }}
                 />
-                <Separator orientation="vertical" className="h-6 bg-gray-300" />{" "}
+                <Separator orientation="vertical" className="h-6 bg-gray-300" />
                 <FaLinkedin
-                  className="hover:text-blue-600 cursor-pointer "
+                  className="hover:text-blue-600 cursor-pointer"
                   onClick={() => {
                     window.open(userData.linkedIn || "https://linkedin.com");
                   }}
                 />
-                <Separator orientation="vertical" className="h-6 bg-gray-300" />{" "}
+                <Separator orientation="vertical" className="h-6 bg-gray-300" />
                 <FaLink
-                  className="hover:text-blue-600 cursor-pointer "
+                  className="hover:text-blue-600 cursor-pointer"
                   onClick={() => {
                     window.open(
                       userData.personalWebsite || "/humpe-to-hai-hi-naw"
@@ -180,23 +183,96 @@ export default function UserProfilePage() {
               <div>
                 <span className="font-bold">{userData.stats.posts}</span> posts
               </div>
-              <div>
-                <span className="font-bold">{userData.stats.followers}</span>{" "}
-                followers
-              </div>
-              <div>
-                <span className="font-bold">{userData.stats.following}</span>{" "}
-                following
-              </div>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <div className="cursor-pointer">
+                    <span className="font-bold">
+                      {userData.stats.followers}
+                    </span>{" "}
+                    followers
+                  </div>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Followers</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-4 space-y-4">
+                    {userData.followers.map((follower) => (
+                      <div
+                        key={follower.id}
+                        className="flex items-center space-x-2"
+                      >
+                        <Avatar>
+                          <AvatarImage
+                            src={follower.imageUrl || undefined}
+                            alt={follower.name}
+                          />
+                          <AvatarFallback>
+                            {follower.name.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold">{follower.name}</p>
+                          <p className="text-sm text-gray-500">
+                            @{follower.username}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </SheetContent>
+              </Sheet>
+              <Sheet>
+                <SheetTrigger asChild>
+                  <div className="cursor-pointer">
+                    <span className="font-bold">
+                      {userData.stats.following}
+                    </span>{" "}
+                    following
+                  </div>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Following</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-4 space-y-4">
+                    {userData.following.map((following) => (
+                      <div
+                        key={following.id}
+                        className="flex items-center space-x-2"
+                      >
+                        <Avatar>
+                          <AvatarImage
+                            src={following.imageUrl || undefined}
+                            alt={following.name}
+                          />
+                          <AvatarFallback>
+                            {following.name.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-semibold">{following.name}</p>
+                          <p className="text-sm text-gray-500">
+                            @{following.username}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </section>
 
-        {/* Tabs for Posts */}
+        {/* Tabs for Posts and Likes */}
         <Tabs defaultValue="posts" className="w-full">
-          <TabsList className="grid w-full grid-cols-1">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="posts" onClick={() => setActiveTab("posts")}>
               <Grid className="mr-2" /> Posts
+            </TabsTrigger>
+            <TabsTrigger value="likes" onClick={() => setActiveTab("likes")}>
+              <Heart className="mr-2" /> Likes
             </TabsTrigger>
           </TabsList>
           <TabsContent value="posts">
@@ -242,17 +318,27 @@ export default function UserProfilePage() {
                 <Card key={like.id}>
                   <CardHeader>
                     <CardTitle>{like.title}</CardTitle>
-                    <CardDescription>{like.excerpt}</CardDescription>
+                    <CardDescription>{like.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Image
-                      src={like.image || "/placeholder.svg"}
-                      alt={like.title}
-                      width={500}
-                      height={300}
-                      className="rounded-lg"
-                    />
+                    {like.imageUrl && (
+                      <Image
+                        src={like.imageUrl}
+                        alt={like.title}
+                        width={500}
+                        height={300}
+                        className="rounded-lg"
+                      />
+                    )}
                   </CardContent>
+                  <CardFooter>
+                    <Button
+                      onClick={() => router.push(`/blog/${like.id}`)}
+                      variant="link"
+                    >
+                      Read More
+                    </Button>
+                  </CardFooter>
                 </Card>
               ))}
             </div>
