@@ -43,18 +43,6 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      updatedBlog = await prisma.blog.update({
-        where: { id: parseInt(blogId) },
-        data: {
-          bookmarks: {
-            disconnect: { id: existingBookmark.id },
-          },
-        },
-        include: {
-          bookmarks: true,
-        },
-      });
-
       return NextResponse.json({
         message: "Bookmark removed successfully",
         blog: updatedBlog,
@@ -120,8 +108,9 @@ export async function GET(req: NextRequest) {
             id: true,
             title: true,
             description: true,
-            imageUrl: true, // Ensure this matches the expected 'image' field on the frontend
+            imageUrl: true,
             createdAt: true,
+            category: true,
             author: {
               select: {
                 name: true,
@@ -143,15 +132,15 @@ export async function GET(req: NextRequest) {
       image: bookmark.blog.imageUrl, // Ensure the field matches your frontend's 'image'
       author: bookmark.blog.author.name,
       date: bookmark.blog.createdAt.toISOString(), // Convert date to string format
-      category: "General", // You can modify this if you have categories
+      category: bookmark.blog.category, // You can modify this if you have categories
     }));
 
     return NextResponse.json({
       message: "Bookmarks retrieved successfully",
       bookmarks: formattedBookmarks, // Return structured data
     });
-  } catch (error) {
-    console.error("Detailed error in get bookmarks API:", error);
+  } catch (error: any) {
+    console.error("Detailed error in get bookmarks API:", error.message);
     return NextResponse.json(
       {
         message: "An error occurred while retrieving your bookmarks",
