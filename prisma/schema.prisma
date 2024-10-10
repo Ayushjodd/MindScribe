@@ -27,8 +27,8 @@ model User {
   image           String?
   accounts        Account[]
   sessions        Session[]
-  followers       Follow[]  @relation("UserFollowers") // Users following this user
-  following       Follow[]  @relation("UserFollowing") // Users this user is following
+  followers       Follow[]  @relation("UserFollowers") 
+  following       Follow[]  @relation("UserFollowing") 
 }
 
 model Blog {
@@ -73,10 +73,8 @@ model Follow {
   followerId String
   following  User   @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
   followingId String
-
   createdAt  DateTime @default(now())
-
-  @@unique([followerId, followingId]) // Ensures a user can't follow another user multiple times
+  @@unique([followerId, followingId]) 
 }
 
 model Account {
