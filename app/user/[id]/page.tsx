@@ -197,14 +197,14 @@ export default function UserProfilePage() {
                     <SheetTitle>Followers</SheetTitle>
                   </SheetHeader>
                   <div className="mt-4 space-y-4">
-                    {userData.followers.map((follower) => (
+                    {userData.followers.map((follower: any) => (
                       <div
                         key={follower.id}
                         className="flex items-center space-x-2"
                       >
                         <Avatar>
                           <AvatarImage
-                            src={follower.imageUrl || undefined}
+                            src={follower?.profilePicture || undefined}
                             alt={follower.name}
                           />
                           <AvatarFallback>
@@ -214,7 +214,7 @@ export default function UserProfilePage() {
                         <div>
                           <p className="font-semibold">{follower.name}</p>
                           <p className="text-sm text-gray-500">
-                            @{follower.username}
+                            {follower.bio}
                           </p>
                         </div>
                       </div>
@@ -236,14 +236,14 @@ export default function UserProfilePage() {
                     <SheetTitle>Following</SheetTitle>
                   </SheetHeader>
                   <div className="mt-4 space-y-4">
-                    {userData.following.map((following) => (
+                    {userData.following.map((following: any) => (
                       <div
                         key={following.id}
                         className="flex items-center space-x-2"
                       >
                         <Avatar>
                           <AvatarImage
-                            src={following.imageUrl || undefined}
+                            src={following.profilePicture || undefined}
                             alt={following.name}
                           />
                           <AvatarFallback>
@@ -253,7 +253,7 @@ export default function UserProfilePage() {
                         <div>
                           <p className="font-semibold">{following.name}</p>
                           <p className="text-sm text-gray-500">
-                            @{following.username}
+                            {following.bio}
                           </p>
                         </div>
                       </div>
