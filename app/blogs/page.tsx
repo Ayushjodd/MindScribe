@@ -47,6 +47,7 @@ export default function BlogListing() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<string[]>([]);
+  const [likedBlogs, setLikedBlogs] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -56,30 +57,36 @@ export default function BlogListing() {
   }, [session]);
 
   useEffect(() => {
+    async function fetchUserDetails() {
+      if (session) {
+        try {
+          const response = await axios.get(
+            `/api/get-user-info/${session.user.id}`
+          );
+          const { likes, bookmarks } = response.data;
+          setLikedBlogs(likes.map((like: any) => like.id));
+          setBookmarkedBlogs(bookmarks.map((bookmark: any) => bookmark.id));
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+          toast.error("Error fetching user details");
+        }
+      }
+    }
+
+    fetchUserDetails();
+  }, [session]);
+
+  useEffect(() => {
     async function fetchData() {
       setIsLoading(true);
       try {
-        const [blogsResponse, bookmarksResponse] = await Promise.all([
-          axios.get("/api/blogs/allBlogs"),
-          session
-            ? axios.get("/api/blogs/bookmark")
-            : Promise.resolve({ data: { bookmarks: [] } }),
-        ]);
-
+        const blogsResponse = await axios.get("/api/blogs/allBlogs");
         if (blogsResponse.status === 200) {
           setBlogs(blogsResponse.data.blogs);
-          console.log(blogsResponse.data.blogs);
-        }
-
-        if (bookmarksResponse.data && bookmarksResponse.data.bookmarks) {
-          const bookmarkIds = bookmarksResponse.data.bookmarks.map(
-            (bookmark: any) => bookmark.blogId
-          );
-          setBookmarkedBlogs(bookmarkIds);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Error fetching blogs and bookmarks");
+        toast.error("Error fetching blogs");
       } finally {
         setIsLoading(false);
       }
@@ -94,6 +101,15 @@ export default function BlogListing() {
       if (response.status === 200) {
         const updatedBlogs = [...blogs];
         updatedBlogs[index].likes = response.data.likes;
+
+        // Update liked blogs state
+        setLikedBlogs((prev) => {
+          const newLikedBlogs = prev.includes(blogId)
+            ? prev.filter((id) => id !== blogId)
+            : [...prev, blogId];
+          return newLikedBlogs;
+        });
+
         setBlogs(updatedBlogs);
         toast.success("Liked!");
       }
@@ -225,14 +241,22 @@ export default function BlogListing() {
                       </div>
                     </CardContent>
                     <CardFooter className="flex justify-between">
-                      <div className="flex space-x-2">
+                      <div className="flex items-center space-x-2">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleLike(post.id, index)}
                         >
-                          <Heart className="h-5 w-5 mr-1" />
-                          {post.likes}
+                          <Heart
+                            className={`h-5 w-5 mr-1 ${
+                              likedBlogs.includes(post.id)
+                                ? "text-red-500"
+                                : "text-gray-500"
+                            }`}
+                          />
+                          {post.likes > 0 && (
+                            <span className="text-sm">{post.likes}</span>
+                          )}
                         </Button>
                         <Button variant="ghost" size="sm">
                           <MessageCircle className="h-5 w-5 mr-1" />0
