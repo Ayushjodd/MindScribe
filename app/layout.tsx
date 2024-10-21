@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/shared/theme-provider";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
+import { ClientWalletProvider } from "./ClientWalletProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,17 +24,21 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Providers>
-        <TopLoader />
         <body className={inter.className}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-            {children}
-          </ThemeProvider>
+          <ClientWalletProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <NextSSRPlugin
+                routerConfig={extractRouterConfig(ourFileRouter)}
+              />
+              <TopLoader />
+              {children}
+            </ThemeProvider>
+          </ClientWalletProvider>
         </body>
       </Providers>
     </html>
