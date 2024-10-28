@@ -13,8 +13,14 @@ const config: Config = {
     extend: {
       animation: {
         rainbow: "rainbow var(--speed, 2s) infinite linear",
+        "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
       },
       keyframes: {
+        "border-beam": {
+          "100%": {
+            "offset-distance": "100%",
+          },
+        },
         rainbow: {
           "0%": { "background-position": "0%" },
           "100%": { "background-position": "200%" },

@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaRegUser } from "react-icons/fa";
 import { PiSignOutBold } from "react-icons/pi";
+import DarkModeToggleV2 from "../ui/Toggle";
 
 const NavBar = () => {
   const { data: session } = useSession();
@@ -62,26 +63,7 @@ const NavBar = () => {
               </Link>
             </nav>
             <div className="hidden md:flex items-center space-x-4 text-black dark:text-white">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon">
-                    <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span className="sr-only">Toggle theme</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setTheme("light")}>
-                    Light
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("dark")}>
-                    Dark
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("system")}>
-                    System
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <DarkModeToggleV2 />
 
               {/* Conditional Rendering based on session */}
               {session ? (
