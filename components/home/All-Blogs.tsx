@@ -48,7 +48,10 @@ export default function AllBlogs() {
   const { data: session, status } = useSession();
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<string[]>([]);
   const [likedBlogs, setLikedBlogs] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+
+  if (status === "loading") {
+    return;
+  }
 
   useEffect(() => {
     if (!session) {
@@ -78,7 +81,6 @@ export default function AllBlogs() {
 
   useEffect(() => {
     async function fetchData() {
-      setIsLoading(true);
       try {
         const blogsResponse = await axios.get("/api/blogs/allBlogs");
         if (blogsResponse.status === 200) {
@@ -87,8 +89,6 @@ export default function AllBlogs() {
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Error fetching blogs");
-      } finally {
-        setIsLoading(false);
       }
     }
 
@@ -133,10 +133,6 @@ export default function AllBlogs() {
       toast.error("Error bookmarking the blog");
     }
   };
-
-  if (status === "loading" || isLoading) {
-    return;
-  }
 
   const filteredPosts = blogs.filter(
     (post) =>

@@ -38,25 +38,25 @@ const NavBar = () => {
             </Link>
             <nav className="hidden md:flex space-x-4">
               <Link
-                className="hover:underline text-sm font-medium text-gray-500 hover:text-primary dark:text-gray-300"
+                className="hover:underline text-md font-medium text-gray-500 hover:text-primary dark:text-gray-300"
                 href="/"
               >
                 Home
               </Link>
               <Link
-                className="hover:underline text-sm font-medium text-gray-500 hover:text-primary dark:text-gray-300"
+                className="hover:underline text-md font-medium text-gray-500 hover:text-primary dark:text-gray-300"
                 href="/blogs"
               >
                 All-Blogs
               </Link>
               <Link
-                className="hover:underline text-sm font-medium text-gray-500 hover:text-primary dark:text-gray-300"
+                className="hover:underline text-md font-medium text-gray-500 hover:text-primary dark:text-gray-300"
                 href="/publish"
               >
                 Publish
               </Link>
               <Link
-                className="hover:underline text-sm font-medium text-gray-500 hover:text-primary dark:text-gray-300"
+                className="hover:underline text-md font-medium text-gray-500 hover:text-primary dark:text-gray-300"
                 href="/about"
               >
                 About
@@ -69,7 +69,7 @@ const NavBar = () => {
               {session ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Avatar>
+                    <Avatar className="cursor-pointer">
                       <AvatarImage
                         src={session.user?.image || ""}
                         alt="User Avatar"

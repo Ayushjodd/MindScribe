@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { HoverEffect } from "../ui/card-hover-effect";
 
 const posts = [
   {
@@ -71,9 +72,12 @@ const PopularPosts = () => {
         <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12 text-black dark:text-white">
           Popular Posts
         </h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 justify-center ">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 justify-center">
           {posts.map((post) => (
-            <MagicCard key={post.id} className="dark:bg-[#0d1016]">
+            <MagicCard
+              key={post.id}
+              className="dark:bg-[#0d1016] transition-transform duration-300 hover:scale-105"
+            >
               <img
                 src={
                   post.imageUrl ||
@@ -82,7 +86,7 @@ const PopularPosts = () => {
                 alt="Blog post thumbnail"
                 width={400}
                 height={200}
-                className="w-full h-48 object-cover"
+                className="w-full h-48 object-cover rounded-t-md"
               />
               <CardHeader>
                 <CardTitle>{post.title}</CardTitle>

@@ -1,8 +1,5 @@
 "use client";
 import React from "react";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import Link from "next/link";
 import { Zap, Users, BookOpen } from "lucide-react";
 import SpotlightCard from "./WhyChooseUs";
 import PopularPosts from "./PopularPosts";

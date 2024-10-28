@@ -1,25 +1,18 @@
 "use client";
+import React from "react";
 import { useTheme } from "next-themes";
-import React, { useEffect, useState } from "react";
 
 function DarkModeToggleV2() {
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleToggle = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  if (!mounted) return null;
-
   return (
     <div className="h-screen flex justify-center items-center">
       <div
-        className={`flex w-16 h-8 p-1 rounded-full cursor-pointer transition-all duration-300 ${
+        className={`flex w-20 h-10 p-1 rounded-full cursor-pointer transition-all duration-300 ${
           theme === "dark"
             ? "bg-zinc-950 border border-zinc-800"
             : "bg-white border border-zinc-200"
@@ -28,10 +21,10 @@ function DarkModeToggleV2() {
       >
         <div className="flex justify-between items-center w-full">
           <div
-            className={`flex justify-center items-center w-6 h-6 rounded-full transition-transform duration-300 ${
+            className={`flex justify-center items-center w-8 h-8 rounded-full transition-transform duration-300 ${
               theme === "dark"
                 ? "transform translate-x-0 bg-zinc-800"
-                : "transform translate-x-8 bg-gray-200"
+                : "transform translate-x-10 bg-gray-200"
             }`}
           >
             {theme === "dark" ? (
@@ -41,7 +34,7 @@ function DarkModeToggleV2() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-4 h-4 text-white"
+                className="w-5 h-5 text-white"
               >
                 <path
                   strokeLinecap="round"
@@ -56,7 +49,7 @@ function DarkModeToggleV2() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-4 h-4 text-gray-700"
+                className="w-5 h-5 text-gray-700"
               >
                 <path
                   strokeLinecap="round"
@@ -67,8 +60,8 @@ function DarkModeToggleV2() {
             )}
           </div>
           <div
-            className={`flex justify-center items-center w-6 h-6 rounded-full transition-transform duration-300 ${
-              theme === "dark" ? "bg-transparent" : "transform -translate-x-8"
+            className={`flex justify-center items-center w-8 h-8 rounded-full transition-transform duration-300 ${
+              theme === "dark" ? "bg-transparent" : "transform -translate-x-10"
             }`}
           >
             {theme === "dark" ? (
@@ -78,7 +71,7 @@ function DarkModeToggleV2() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-4 h-4 text-gray-500"
+                className="w-5 h-5 text-gray-500"
               >
                 <path
                   strokeLinecap="round"
@@ -93,7 +86,7 @@ function DarkModeToggleV2() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-4 h-4 text-black"
+                className="w-5 h-5 text-black"
               >
                 <path
                   strokeLinecap="round"
