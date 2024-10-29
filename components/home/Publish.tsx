@@ -18,15 +18,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast, useToast } from "../../hooks/use-toast";
-import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useToast } from "../../hooks/use-toast";
+import { Bookmark, Heart } from "lucide-react";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -34,6 +31,11 @@ import NavBar from "@/components/shared/NavBar";
 import axios from "axios";
 import confetti from "canvas-confetti";
 import { Toaster } from "@/components/ui/toaster";
+import { Badge } from "../ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { useSession } from "next-auth/react";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
+import { IoDiamond } from "react-icons/io5";
 
 export default function BlogPublisher() {
   const [title, setTitle] = useState("");
@@ -44,6 +46,13 @@ export default function BlogPublisher() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const [showConfetti, setShowConfetti] = useState(false);
+  const session = useSession();
+  const [userData, setUserData] = useState<any>();
+  const [loading, setLoading] = useState(true);
+
+  if (session.status !== "authenticated") {
+    return;
+  }
 
   useEffect(() => {
     if (showConfetti) {
@@ -83,7 +92,7 @@ export default function BlogPublisher() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!title || !content || !author || !category || !imageUrl) {
+    if (!title || !content || !category || !imageUrl) {
       toast({
         title: "All fields are required",
         description: "Please fill out all the fields before publishing.",
@@ -138,10 +147,34 @@ export default function BlogPublisher() {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `/api/user/get-user-info/${session.data?.user.id}`
+        );
+        console.log(response);
+        setUserData(response.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+      }
+    };
+
+    if (session.data?.user.id) {
+      fetchData();
+    }
+  }, [session.data?.user.id]);
+
+  if (loading) {
+    return;
+  }
+
   return (
     <>
       <Toaster />
       <NavBar />
+
       <div className="container mx-auto px-4 py-8">
         {showConfetti && <div id="confetti" />}
         <h1 className="text-3xl font-bold mb-8">Publish Your Blog</h1>
@@ -182,16 +215,7 @@ export default function BlogPublisher() {
                         className="min-h-[200px]"
                       />
                     </div>
-                    <div className="flex flex-col space-y-1.5">
-                      <Label htmlFor="author">Author</Label>
-                      <Input
-                        id="author"
-                        placeholder="Your name"
-                        value={author}
-                        onChange={(e) => setAuthor(e.target.value)}
-                        required
-                      />
-                    </div>
+
                     <div className="flex flex-col space-y-1.5">
                       <Label htmlFor="category">Category</Label>
                       <Select
@@ -257,39 +281,90 @@ export default function BlogPublisher() {
             </Card>
           </TabsContent>
           <TabsContent value="preview">
-            <Card>
-              <CardHeader>
-                <CardTitle>{title || "Your Blog Title"}</CardTitle>
-                <CardDescription>
-                  By {author || "Author Name"} in {category || "Category"}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {imageUrl && (
-                  <img
-                    src={imageUrl}
-                    alt="Cover"
-                    className="mb-4 max-w-full rounded"
-                  />
-                )}
-                {content ? (
-                  <div className="prose max-w-none">
-                    {content.split("\n").map((paragraph, index) => (
-                      <p key={index}>{paragraph}</p>
-                    ))}
+            <div className="">
+              <Card className="overflow-hidden lg:flex">
+                <div className="w-full">
+                  <div className="w-full h-96 flex text-gray-500">
+                    <img
+                      src={
+                        imageUrl ||
+                        "https://i.pinimg.com/236x/d4/b9/e2/d4b9e26d2227182276017e4a39eedaed.jpg"
+                      }
+                      alt={title || "Your Blog Title"}
+                    />
                   </div>
-                ) : (
-                  <Alert>
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Preview</AlertTitle>
-                    <AlertDescription>
-                      Your blog content will appear here. Start writing in the
-                      "Write" tab to see a preview.
-                    </AlertDescription>
-                  </Alert>
-                )}
-              </CardContent>
-            </Card>
+                </div>
+
+                <div className="w-full p-4">
+                  <CardHeader>
+                    <div className="flex items-center justify-between mb-2">
+                      <Badge variant="secondary">
+                        {category || "Category"}
+                      </Badge>
+                      <Button variant="ghost" size="icon">
+                        <Bookmark className={"h-5 w-5 z-40 text-gray-500"} />
+                      </Button>
+                    </div>
+                    <CardTitle className="text-3xl font-bold mb-2">
+                      {title || "Your Blog Title"}
+                    </CardTitle>
+                    <CardDescription>
+                      {content
+                        ? content.split(" ").slice(0, 27).join(" ") +
+                          (content.split(" ").length > 27 ? "..." : "")
+                        : "A brief description of the blog post."}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center space-x-3">
+                      <Avatar>
+                        <AvatarImage
+                          className="w-10"
+                          src={userData?.profilePicture}
+                        />
+                        <AvatarFallback>
+                          {userData?.name?.charAt(0) || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p
+                          className={`text-sm font-medium ${
+                            userData?.membership.type === "ADVANCE"
+                              ? "text-yellow-500"
+                              : userData?.membership.type === "PRO"
+                              ? "text-blue-500"
+                              : "text-white"
+                          }`}
+                        >
+                          {userData?.name || "Author Name"}
+                          {userData.membership?.type === "ADVANCE" && (
+                            <RiVerifiedBadgeFill
+                              className="inline ml-1 text-yellow-500"
+                              title="Gold Verified"
+                            />
+                          )}
+                          {userData.membership?.type === "PRO" && (
+                            <IoDiamond
+                              className="inline ml-1 text-blue-500"
+                              title="Pro Member"
+                            />
+                          )}
+                        </p>
+                        <p className="text-xs text-gray-500">{"69/69/6969"}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex justify-between">
+                    <div className="flex items-center space-x-4">
+                      <Heart className="h-5 w-5 text-gray-500" />
+                    </div>
+                    <Button className="z-40" variant="default" size="lg">
+                      Read More
+                    </Button>
+                  </CardFooter>
+                </div>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
