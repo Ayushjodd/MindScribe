@@ -21,6 +21,8 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
+import { IoDiamond } from "react-icons/io5";
 
 interface Author {
   id: string;
@@ -28,6 +30,9 @@ interface Author {
   name: string;
   image: string;
   profilePicture: string | null;
+  membership: {
+    type: string;
+  };
 }
 
 interface Blog {
@@ -48,6 +53,7 @@ export default function AllBlogs() {
   const { data: session, status } = useSession();
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<string[]>([]);
   const [likedBlogs, setLikedBlogs] = useState<string[]>([]);
+  const [userDetail, setUserDetail] = useState<any>(null);
 
   if (status === "loading") {
     return;
@@ -66,6 +72,7 @@ export default function AllBlogs() {
           const response = await axios.get(
             `/api/user/get-user-info/${session.user.id}`
           );
+          setUserDetail(response.data);
           const { likes, bookmarks } = response.data;
           setLikedBlogs(likes.map((like: any) => like.id));
           setBookmarkedBlogs(bookmarks.map((bookmark: any) => bookmark.id));
@@ -83,6 +90,7 @@ export default function AllBlogs() {
     async function fetchData() {
       try {
         const blogsResponse = await axios.get("/api/blogs/allBlogs");
+        console.log(blogsResponse);
         if (blogsResponse.status === 200) {
           setBlogs(blogsResponse.data.blogs);
         }
@@ -111,7 +119,6 @@ export default function AllBlogs() {
         });
 
         setBlogs(updatedBlogs);
-        toast.success("Liked!");
       }
     } catch (error) {
       toast.error("Error liking the blog");
@@ -226,9 +233,27 @@ export default function AllBlogs() {
                             onClick={() =>
                               router.push(`/user/${post.author.id}`)
                             }
-                            className="hover:underline cursor-pointer text-sm font-medium"
+                            className={`hover:underline cursor-pointer text-sm font-medium ${
+                              post.author.membership?.type === "ADVANCE"
+                                ? "text-yellow-500"
+                                : post.author.membership?.type === "PRO"
+                                ? "text-blue-500"
+                                : "text-gray-800"
+                            }`}
                           >
                             {post.author.name || post.author.username}
+                            {post.author.membership?.type === "ADVANCE" && (
+                              <RiVerifiedBadgeFill
+                                className="inline ml-1 text-yellow-500"
+                                title="Gold Verified"
+                              />
+                            )}
+                            {post.author.membership?.type === "PRO" && (
+                              <IoDiamond
+                                className="inline ml-1 text-blue-500"
+                                title="Pro Member"
+                              />
+                            )}
                           </p>
                           <p className="text-xs text-gray-500">
                             {new Date(post.createdAt).toLocaleDateString()}
