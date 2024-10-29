@@ -12,13 +12,15 @@ import { Bookmark, MessageCircle, Feather } from "lucide-react";
 import Link from "next/link";
 import NavBar from "@/components/shared/NavBar";
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { BsTwitterX } from "react-icons/bs";
 import { FaLinkedin } from "react-icons/fa";
 import { FaTelegramPlane } from "react-icons/fa";
 import { FaLink } from "react-icons/fa";
 import Footer from "@/components/shared/Footer";
 import { useSession } from "next-auth/react";
+import { IoDiamond } from "react-icons/io5";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 interface BlogPost {
   title: string;
@@ -45,12 +47,15 @@ interface Author {
   linkedIn: string;
   Telegram: string;
   personalWebsite: string;
+  membership: {
+    type: string;
+  };
 }
 
 const calculateReadingTime = (content: string) => {
   const wordsPerMinute = 200;
-  const textLength = content.split(/\s+/).length; // Split content by whitespace
-  const readingTime = Math.ceil(textLength / wordsPerMinute); // Calculate reading time
+  const textLength = content.split(/\s+/).length;
+  const readingTime = Math.ceil(textLength / wordsPerMinute);
   return `${readingTime} min read`;
 };
 
@@ -60,12 +65,14 @@ export default function BlogPost() {
   const [blogData, setBlogData] = useState<BlogPost | null>(null);
   const { id } = useParams();
   const session: any = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchData() {
       const data = await axios.get(`/api/blogs/${id}`);
       //@ts-ignore
       setBlogData(data.data?.blog);
+      console.log(data);
     }
     fetchData();
   }, [id]);
@@ -81,8 +88,7 @@ export default function BlogPost() {
     }
 
     try {
-      const response = await axios.post("/api/follow", {
-        followerId: session.data.user.id,
+      const response = await axios.post("/api/user/follow", {
         followingId: blogData?.author.id,
       });
 
@@ -114,14 +120,39 @@ export default function BlogPost() {
               <div className="flex items-center space-x-4 mb-6">
                 <Avatar>
                   <AvatarImage
-                    src={blogData.author.image}
+                    src={blogData.author.profilePicture}
                     alt={blogData.author.image}
                   />
                   <AvatarFallback>{blogData.author.image}</AvatarFallback>
                 </Avatar>
                 <div>
                   <h2 className="text-lg font-semibold">
-                    {blogData.author.name}
+                    <p
+                      onClick={() => {
+                        router.push(`/user/${blogData.author.id}`);
+                      }}
+                      className={`hover:underline cursor-pointer  font-medium ${
+                        blogData.author.membership?.type === "ADVANCE"
+                          ? "text-yellow-500"
+                          : blogData.author.membership?.type === "PRO"
+                          ? "text-blue-500"
+                          : "text-white"
+                      }`}
+                    >
+                      {blogData.author.name || blogData.author.username}
+                      {blogData.author.membership?.type === "ADVANCE" && (
+                        <RiVerifiedBadgeFill
+                          className="inline ml-1 text-yellow-500"
+                          title="Gold Verified"
+                        />
+                      )}
+                      {blogData.author.membership?.type === "PRO" && (
+                        <IoDiamond
+                          className="inline ml-1 text-blue-500"
+                          title="Pro Member"
+                        />
+                      )}
+                    </p>
                   </h2>
                   <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                     <span>
@@ -220,14 +251,40 @@ export default function BlogPost() {
               <div className="flex items-start space-x-4">
                 <Avatar className="w-12 h-12">
                   <AvatarImage
-                    src={blogData.author.image}
+                    src={blogData.author.profilePicture}
                     alt={blogData.author.image}
                   />
                   <AvatarFallback>{blogData.author.image}</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="text-lg font-semibold">
-                    Written by {blogData.author.name}
+                  <h3 className="text-lg font-semibold flex gap-2">
+                    Written by{" "}
+                    <p
+                      onClick={() => {
+                        router.push(`/user/${blogData.author.id}`);
+                      }}
+                      className={`hover:underline cursor-pointer  font-medium ${
+                        blogData.author.membership?.type === "ADVANCE"
+                          ? "text-yellow-500"
+                          : blogData.author.membership?.type === "PRO"
+                          ? "text-blue-500"
+                          : "text-white"
+                      }`}
+                    >
+                      {blogData.author.name || blogData.author.username}
+                      {blogData.author.membership?.type === "ADVANCE" && (
+                        <RiVerifiedBadgeFill
+                          className="inline ml-1 text-yellow-500"
+                          title="Gold Verified"
+                        />
+                      )}
+                      {blogData.author.membership?.type === "PRO" && (
+                        <IoDiamond
+                          className="inline ml-1 text-blue-500"
+                          title="Pro Member"
+                        />
+                      )}
+                    </p>
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 mb-2">
                     {blogData.author.bio}
