@@ -28,6 +28,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { IoDiamond } from "react-icons/io5";
+import { RiVerifiedBadgeFill } from "react-icons/ri";
 
 interface User {
   id: string;
@@ -52,6 +54,9 @@ interface User {
     bookmarks: number;
     followers: number;
     following: number;
+  };
+  membership: {
+    type: string;
   };
 }
 
@@ -147,7 +152,31 @@ export default function UserProfilePage() {
               />
               <AvatarFallback>{userData.name?.charAt(0) || "U"}</AvatarFallback>
             </Avatar>
-            <h2 className="text-2xl font-bold mb-2">{userData.name}</h2>
+            <h2 className="text-xl  mb-2">
+              <p
+                className={`hover:underline cursor-pointer  font-medium ${
+                  userData.membership?.type === "ADVANCE"
+                    ? "text-yellow-500"
+                    : userData.membership?.type === "PRO"
+                    ? "text-blue-500"
+                    : "text-gray-800"
+                }`}
+              >
+                {userData.name || userData.username}
+                {userData.membership?.type === "ADVANCE" && (
+                  <RiVerifiedBadgeFill
+                    className="inline ml-1 text-yellow-500"
+                    title="Gold Verified"
+                  />
+                )}
+                {userData.membership?.type === "PRO" && (
+                  <IoDiamond
+                    className="inline ml-1 text-blue-500"
+                    title="Pro Member"
+                  />
+                )}
+              </p>
+            </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               {userData.bio}
             </p>
@@ -155,21 +184,21 @@ export default function UserProfilePage() {
             <div className="mb-3">
               <div className="flex text-xl gap-4 items-center">
                 <FaXTwitter
-                  className="hover:text-blue-600 cursor-pointer"
+                  className="hover:text-blue-600 cursor-pointer transition-all delay-150"
                   onClick={() => {
                     window.open(`https://x.com/${userData.twitter}`);
                   }}
                 />
                 <Separator orientation="vertical" className="h-6 bg-gray-300" />
                 <FaLinkedin
-                  className="hover:text-blue-600 cursor-pointer"
+                  className="hover:text-blue-600 cursor-pointer transition-all delay-150"
                   onClick={() => {
                     window.open(userData.linkedIn || "https://linkedin.com");
                   }}
                 />
                 <Separator orientation="vertical" className="h-6 bg-gray-300" />
                 <FaLink
-                  className="hover:text-blue-600 cursor-pointer"
+                  className="hover:text-blue-600 cursor-pointer transition-all delay-150"
                   onClick={() => {
                     window.open(
                       userData.personalWebsite || "/humpe-to-hai-hi-naw"
