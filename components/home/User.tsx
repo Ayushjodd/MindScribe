@@ -132,7 +132,6 @@ export default function UserProfilePage() {
     }
   }, [id]);
 
-  if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   if (!userData) return <div>No user data available</div>;
 

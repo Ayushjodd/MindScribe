@@ -12,10 +12,27 @@ const config: Config = {
   theme: {
     extend: {
       animation: {
+        spotlight: "spotlight 2s ease .75s 1 forwards",
+        gradient: "gradient 8s linear infinite",
         rainbow: "rainbow var(--speed, 2s) infinite linear",
         "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
       },
       keyframes: {
+        spotlight: {
+          "0%": {
+            opacity: "0",
+            transform: "translate(-72%, -62%) scale(0.5)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translate(-50%,-40%) scale(1)",
+          },
+        },
+        gradient: {
+          to: {
+            backgroundPosition: "var(--bg-size) 0",
+          },
+        },
         "border-beam": {
           "100%": {
             "offset-distance": "100%",
