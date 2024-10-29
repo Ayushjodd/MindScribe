@@ -4,22 +4,41 @@ import { Button } from "../ui/button";
 import { SiSolana } from "react-icons/si";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
-import type { ConfettiRef } from "../magicui/Confetti";
-import Confetti from "../magicui/Confetti";
+import confetti from "canvas-confetti";
+import { useState } from "react";
 
 const MembershipPayment = ({ userId, membershipType }: any) => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
   const router = useRouter();
-  const confettiRef = useRef<ConfettiRef>(null);
-  const [showConfetti, setShowConfetti] = useState(false);
 
-  const triggerConfetti = () => {
-    setShowConfetti(true);
-    setTimeout(() => {
-      confettiRef.current?.fire();
-    }, 100);
+  const triggerFireworks = () => {
+    const duration = 5 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    const randomInRange = (min: number, max: number) =>
+      Math.random() * (max - min) + min;
+
+    const interval = window.setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+      });
+      confetti({
+        ...defaults,
+        particleCount,
+        origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+      });
+    }, 250);
   };
 
   const handlePayment = async () => {
@@ -70,10 +89,9 @@ const MembershipPayment = ({ userId, membershipType }: any) => {
         if (response.ok) {
           const data = await response.json();
           toast.success("Membership updated successfully!");
-          triggerConfetti();
+          triggerFireworks();
 
           setTimeout(() => {
-            setShowConfetti(false);
             router.push("/blogs");
           }, 3000);
 
@@ -95,18 +113,10 @@ const MembershipPayment = ({ userId, membershipType }: any) => {
   };
 
   return (
-    <>
-      <Button onClick={handlePayment} disabled={!publicKey} className="w-full">
-        <SiSolana className="mr-2 h-4 w-4" />
-        Pay with Solana
-      </Button>
-
-      {showConfetti && (
-        <div className="fixed inset-0 pointer-events-none z-50">
-          <Confetti ref={confettiRef} className="w-full h-full" />
-        </div>
-      )}
-    </>
+    <Button onClick={handlePayment} disabled={!publicKey} className="w-full">
+      <SiSolana className="mr-2 h-4 w-4" />
+      Pay with Solana
+    </Button>
   );
 };
 
