@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import {
   Card,
   CardContent,
@@ -10,6 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +29,19 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { IoDiamond } from "react-icons/io5";
+import { FaCrown } from "react-icons/fa";
+import { AnimatedGradientText } from "../ui/MagicUiAnimatedBtn";
+import { cn } from "@/lib/utils";
+
+const categories = [
+  "Programming",
+  "Technology",
+  "Health",
+  "Finance",
+  "Sports",
+  "Geopolitics",
+  "Politics",
+];
 
 interface Author {
   id: string;
@@ -48,16 +67,14 @@ interface Blog {
 
 export default function AllBlogs() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [showExclusive, setShowExclusive] = useState(false);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const router = useRouter();
   const { data: session, status } = useSession();
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<string[]>([]);
   const [likedBlogs, setLikedBlogs] = useState<string[]>([]);
   const [userDetail, setUserDetail] = useState<any>(null);
-
-  if (status === "loading") {
-    return;
-  }
 
   useEffect(() => {
     if (!session) {
@@ -90,7 +107,6 @@ export default function AllBlogs() {
     async function fetchData() {
       try {
         const blogsResponse = await axios.get("/api/blogs/allBlogs");
-        console.log(blogsResponse);
         if (blogsResponse.status === 200) {
           setBlogs(blogsResponse.data.blogs);
         }
@@ -110,14 +126,12 @@ export default function AllBlogs() {
         const updatedBlogs = [...blogs];
         updatedBlogs[index].likes = response.data.likes;
 
-        // Update liked blogs state
         setLikedBlogs((prev) => {
           const newLikedBlogs = prev.includes(blogId)
             ? prev.filter((id) => id !== blogId)
             : [...prev, blogId];
           return newLikedBlogs;
         });
-
         setBlogs(updatedBlogs);
       }
     } catch (error) {
@@ -141,11 +155,26 @@ export default function AllBlogs() {
     }
   };
 
-  const filteredPosts = blogs.filter(
-    (post) =>
+  const handleCategoryChange = (value: string) => {
+    setSelectedCategory(value);
+  };
+
+  const filteredPosts = blogs.filter((post) => {
+    const matchesSearch =
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      post.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      post.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" || post.category === selectedCategory;
+    const matchesExclusive = showExclusive
+      ? post.author.membership?.type !== "BASIC"
+      : true;
+
+    return matchesSearch && matchesCategory && matchesExclusive;
+  });
+
+  if (status === "loading") {
+    return;
+  }
 
   return (
     <>
@@ -157,8 +186,8 @@ export default function AllBlogs() {
             Explore Our Blogs
           </h1>
 
-          <div className="mb-8">
-            <div className="relative">
+          <div className="flex items-center space-x-4 mb-8">
+            <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <Input
                 type="text"
@@ -168,6 +197,30 @@ export default function AllBlogs() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+            <Select onValueChange={handleCategoryChange} defaultValue="all">
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Select Category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {categories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <AnimatedGradientText className="z-40 cursor-pointer">
+              🤫 <hr className="mx-2 h-4 w-px shrink-0 bg-gray-300" />{" "}
+              <span
+                className={cn(
+                  `inline animate-gradient bg-gradient-to-r from-[#ff6b40] via-[#9c40ff] to-[#40afff] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`
+                )}
+              >
+                Exclusive Members Only
+              </span>
+              <FaCrown className="ml-1 size-4 text-[#e5c56d] transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
+            </AnimatedGradientText>
           </div>
 
           <div className="space-y-6">
@@ -190,7 +243,7 @@ export default function AllBlogs() {
                           onClick={() => handleBookmark(post.id)}
                         >
                           <Bookmark
-                            className={`h-5 w-5 z-10 ${
+                            className={`h-5 w-5 z-50 ${
                               bookmarkedBlogs.includes(post.id)
                                 ? "text-blue-500"
                                 : "text-gray-500"
@@ -247,28 +300,29 @@ export default function AllBlogs() {
                       </div>
                     </CardContent>
                     <CardFooter className="flex justify-between">
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-4">
                         <Button
+                          className=""
                           variant="ghost"
-                          size="sm"
+                          size="icon"
                           onClick={() => handleLike(post.id, index)}
                         >
                           <Heart
-                            className={`h-5 w-5 mr-1 ${
+                            className={`h-5  w-5 z-10 ${
                               likedBlogs.includes(post.id)
                                 ? "text-red-500"
                                 : "text-gray-500"
                             }`}
                           />
                           {post.likes > 0 && (
-                            <span className="text-sm">{post.likes}</span>
+                            <span className="text-xs ml-1">{post.likes}</span>
                           )}
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        {/* <Button variant="ghost" size="sm">
                           <MessageCircle className="h-5 w-5 mr-1" />0
-                        </Button>
+                        </Button> */}
                       </div>
-                      <Button variant="default" size="lg">
+                      <Button className="z-40" variant="default" size="lg">
                         <Link href={`/blog/${post.id}`}>Read More</Link>
                       </Button>
                     </CardFooter>
