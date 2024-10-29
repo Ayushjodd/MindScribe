@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Check, CreditCard, UserRoundIcon, Zap } from "lucide-react";
+import { Check, CreditCard } from "lucide-react";
 import ConnectWallet from "../shared/ConnectWalletBtn";
 import MembershipPayment from "../shared/SolanaPaymentBtn";
 import { FaArrowLeftLong } from "react-icons/fa6";
@@ -61,7 +61,6 @@ const membershipTiers = [
 export default function MembershipPage() {
   const [selectedTier, setSelectedTier] = useState("Free");
   const [paymentMethod, setPaymentMethod] = useState("upi");
-  const [isProcessing, setIsProcessing] = useState(false);
   const [solExchangeRate, setSolExchangeRate] = useState(0);
   const router = useRouter();
   const session = useSession();
@@ -85,38 +84,6 @@ export default function MembershipPage() {
 
   const getSolPrice = (priceInINR: any) =>
     (priceInINR / solExchangeRate).toFixed(5);
-
-  //@ts-ignore
-  const updateMembership = async (userId, membershipType, paymentMethod) => {
-    try {
-      const response = await fetch("/api/user/membership", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, membershipType, paymentMethod }),
-      });
-      if (!response.ok) throw new Error("Failed to update membership");
-      return await response.json();
-    } catch (error) {
-      console.error("Error updating membership:", error);
-      throw error;
-    }
-  };
-
-  const handlePayment = async () => {
-    setIsProcessing(true);
-    try {
-      await updateMembership(
-        session?.data?.user?.id,
-        selectedTier,
-        paymentMethod
-      );
-      router.push("/blogs");
-    } catch (error) {
-      console.error("Failed to update membership:", error);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
 
   const handleTierSelection = (tierName: any) => {
     setSelectedTier(tierName);

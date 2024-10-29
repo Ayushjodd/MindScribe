@@ -6,7 +6,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { HoverEffect } from "../ui/card-hover-effect";
 
 const posts = [
   {

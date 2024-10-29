@@ -110,7 +110,7 @@ const Hero = () => {
           </svg>
         </div>
         <ShootingStars />
-        <StarsBackground />
+        <StarsBackground twinkleProbability={0.9} />
       </section>
     </>
   );

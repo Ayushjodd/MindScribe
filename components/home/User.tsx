@@ -159,7 +159,7 @@ export default function UserProfilePage() {
                     ? "text-yellow-500"
                     : userData.membership?.type === "PRO"
                     ? "text-blue-500"
-                    : "text-gray-800"
+                    : "text-white"
                 }`}
               >
                 {userData.name || userData.username}
@@ -184,21 +184,21 @@ export default function UserProfilePage() {
             <div className="mb-3">
               <div className="flex text-xl gap-4 items-center">
                 <FaXTwitter
-                  className="hover:text-blue-600 cursor-pointer transition-all delay-150"
+                  className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
                   onClick={() => {
                     window.open(`https://x.com/${userData.twitter}`);
                   }}
                 />
                 <Separator orientation="vertical" className="h-6 bg-gray-300" />
                 <FaLinkedin
-                  className="hover:text-blue-600 cursor-pointer transition-all delay-150"
+                  className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
                   onClick={() => {
                     window.open(userData.linkedIn || "https://linkedin.com");
                   }}
                 />
                 <Separator orientation="vertical" className="h-6 bg-gray-300" />
                 <FaLink
-                  className="hover:text-blue-600 cursor-pointer transition-all delay-150"
+                  className="hover:text-blue-600 cursor-pointer transition-all  text-black dark:text-white"
                   onClick={() => {
                     window.open(
                       userData.personalWebsite || "/humpe-to-hai-hi-naw"
@@ -208,7 +208,7 @@ export default function UserProfilePage() {
               </div>
             </div>
 
-            <div className="flex justify-center space-x-4 mb-4">
+            <div className="flex justify-center space-x-4 mb-4 text-black dark:text-white">
               <div>
                 <span className="font-bold">{userData.stats.posts}</span> posts
               </div>

@@ -27,7 +27,7 @@ const NavBar = () => {
 
   return (
     <>
-      <header className="dark:shadow-xl dark:shadow-[#0d1016] fixed top-0 left-0 right-0 z-50 py-3 border-b px-4 lg:px-6 h-14 flex items-center bg-white  backdrop-blur-md  dark:bg-[#0d1117] dark:bg-opacity-90">
+      <header className="dark:shadow-xl fixed top-0 left-0 right-0 z-50 py-3 border-b px-4 lg:px-6 h-14 flex items-center bg-white  backdrop-blur-md  dark:bg-black dark:bg-opacity-90">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link className="flex items-center" href="#">

@@ -34,7 +34,19 @@ export async function GET(
         id: true,
         title: true,
         description: true,
-        author: true,
+        author: {
+          select: {
+            id: true,
+            username: true,
+            name: true,
+            profilePicture: true,
+            membership: {
+              select: {
+                type: true,
+              },
+            },
+          },
+        },
         content: true,
         authorId: true,
         createdAt: true,

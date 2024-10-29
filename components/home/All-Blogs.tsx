@@ -153,21 +153,11 @@ export default function AllBlogs() {
       <NavBar />
       <div className="w-full h-full dark:bg-black bg-white">
         <div className="container mx-auto px-4 py-8">
-          <motion.h1
-            className="text-4xl mb-8 text-center pointer-events-none z-10 h-full whitespace-pre-wrap bg-gradient-to-br from-[#ff2975] from-35% to-[#00FFF1] bg-clip-text font-bold leading-none tracking-tighter text-transparent dark:drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
+          <h1 className="text-4xl mb-8 text-center pointer-events-none z-10 h-full whitespace-pre-wrap bg-gradient-to-br from-[#ff2975] from-35% to-[#00FFF1] bg-clip-text font-bold leading-none tracking-tighter text-transparent dark:drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)">
             Explore Our Blogs
-          </motion.h1>
+          </h1>
 
-          <motion.div
-            className="mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
+          <div className="mb-8">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <Input
@@ -178,19 +168,14 @@ export default function AllBlogs() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-          </motion.div>
+          </div>
 
-          <div className="space-y-8">
+          <div className="space-y-6">
             {filteredPosts.map((post, index) => (
-              <motion.div
-                key={post.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
+              <div key={post.id}>
                 <Card className="overflow-hidden lg:flex">
-                  <div className="w-full">
-                    <div className="w-full h-full flex text-gray-500">
+                  <div className="w-full ">
+                    <div className="w-full h-96 flex text-gray-500">
                       <img src={post.imageUrl || ""} alt={post.title} />
                     </div>
                   </div>
@@ -205,7 +190,7 @@ export default function AllBlogs() {
                           onClick={() => handleBookmark(post.id)}
                         >
                           <Bookmark
-                            className={`h-5 w-5 ${
+                            className={`h-5 w-5 z-10 ${
                               bookmarkedBlogs.includes(post.id)
                                 ? "text-blue-500"
                                 : "text-gray-500"
@@ -238,7 +223,7 @@ export default function AllBlogs() {
                                 ? "text-yellow-500"
                                 : post.author.membership?.type === "PRO"
                                 ? "text-blue-500"
-                                : "text-gray-800"
+                                : "text-white"
                             }`}
                           >
                             {post.author.name || post.author.username}
@@ -289,7 +274,7 @@ export default function AllBlogs() {
                     </CardFooter>
                   </div>
                 </Card>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>

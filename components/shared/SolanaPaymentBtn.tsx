@@ -2,6 +2,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { Transaction, SystemProgram, PublicKey } from "@solana/web3.js";
 import { Button } from "../ui/button";
 import { SiSolana } from "react-icons/si";
+import toast from "react-hot-toast";
 
 const MembershipPayment = ({ userId, membershipType }: any) => {
   const { connection } = useConnection();
@@ -27,6 +28,8 @@ const MembershipPayment = ({ userId, membershipType }: any) => {
         })
       );
 
+      const loadingToast = toast.loading("Processing payment...");
+
       const signature = await sendTransaction(transaction, connection);
       console.log("Transaction signature:", signature);
 
@@ -36,6 +39,7 @@ const MembershipPayment = ({ userId, membershipType }: any) => {
       );
       if (confirmed) {
         console.log("Payment confirmed");
+
         const response = await fetch("/api/user/membership", {
           method: "PUT",
           headers: {
@@ -51,19 +55,31 @@ const MembershipPayment = ({ userId, membershipType }: any) => {
 
         if (response.ok) {
           const data = await response.json();
+          toast.success("Membership updated successfully!");
           console.log("Membership updated successfully:", data);
         } else {
+          toast.error("Failed to update membership.");
           console.error("Failed to update membership:", response.statusText);
         }
+      } else {
+        toast.error("Payment confirmation failed.");
       }
+
+      toast.dismiss(loadingToast);
     } catch (error) {
+      toast.dismiss();
+      toast.error("Payment failed.");
       console.error("Payment failed", error);
     }
   };
 
   return (
     <div>
-      <Button className="w-full" onClick={handlePayment} disabled={!publicKey}>
+      <Button
+        className="w-full focus:ring-4 focus:ring-blue-400"
+        onClick={handlePayment}
+        disabled={!publicKey}
+      >
         Pay via Solana <SiSolana className="ml-2" />
       </Button>
     </div>

@@ -27,6 +27,7 @@ export async function GET(
     const author = await prisma.user.findUnique({
       where: { id: authorId },
       select: {
+        membership: true,
         id: true,
         username: true,
         name: true,

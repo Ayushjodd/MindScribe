@@ -1,12 +1,24 @@
 "use client";
 
-export const ShimmerButton = ({ children, onClick }: any) => {
+import { FC, ReactNode, ButtonHTMLAttributes } from "react";
+
+interface ShimmerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: ReactNode;
+  className?: string;
+}
+
+export const ShimmerButton: FC<ShimmerButtonProps> = ({
+  children,
+  onClick,
+  className = "",
+  ...props
+}) => {
   return (
     <div className="flex items-center justify-center">
       <button
-        onClick={() => onClick}
-        className="bubbleeffectbtn w-full mt-3"
-        type="button"
+        onClick={onClick}
+        className={`bubbleeffectbtn flex items-center justify-center space-x-2 ${className}`}
+        {...props}
       >
         <style jsx>{`
           .bubbleeffectbtn {
@@ -16,7 +28,7 @@ export const ShimmerButton = ({ children, onClick }: any) => {
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
-            display: inline-block;
+            display: inline-flex;
             outline: none;
             border-radius: 25px;
             border: none;

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
@@ -26,7 +24,19 @@ export async function GET() {
         title: true,
         description: true,
         content: true,
-        author: true,
+        author: {
+          select: {
+            id: true,
+            username: true,
+            name: true,
+            profilePicture: true,
+            membership: {
+              select: {
+                type: true,
+              },
+            },
+          },
+        },
         createdAt: true,
         category: true,
         imageUrl: true,

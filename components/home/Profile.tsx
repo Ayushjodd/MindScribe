@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import NavBar from "@/components/shared/NavBar";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import { Spotlight } from "../ui/spotlight";
 
 export default function ProfilePage() {
   const [twitter, setTwitter] = useState("");
@@ -44,7 +45,10 @@ export default function ProfilePage() {
   return (
     <>
       <NavBar />
-
+      <Spotlight
+        className="-top-40 left-0 md:left-60 md:-top-20"
+        fill="white"
+      />
       <div className="flex items-center justify-center min-h-screen">
         <div className="container max-w-lg p-6 transition-colors duration-300 dark:bg-[#030712] dark:text-white border rounded-lg">
           <motion.div
