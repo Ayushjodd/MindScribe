@@ -1,5 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -163,10 +161,6 @@ export default function BlogPublisher() {
     }
   };
 
-  if (session.status !== "authenticated") {
-    return;
-  }
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -187,7 +181,7 @@ export default function BlogPublisher() {
   }, [session.data?.user.id]);
 
   if (loading) {
-    return;
+    return null;
   }
 
   return (
@@ -197,8 +191,8 @@ export default function BlogPublisher() {
       <div className="min-h-screen min-w-full bg-white dark:bg-black ">
         <div className="container  mx-auto px-4 py-8 ">
           {showConfetti && <div id="confetti" />}
-          <h1 className="text-3xl font-bold mb-8 text-black dark:text-white">
-            Publish Your Blog
+          <h1 className="text-3xl text-center font-bold mb-8 text-black dark:text-white">
+            Publish Your Blog ✍🏻
           </h1>
           <Tabs defaultValue="write">
             <TabsList className="grid w-full grid-cols-2">

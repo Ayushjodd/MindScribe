@@ -49,7 +49,7 @@ export default function Signup() {
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl text-center">
-                Welcome to Acme Blogs
+                Welcome to MindScribe
               </CardTitle>
               <CardDescription className="text-center">
                 Sign up or log in to get started

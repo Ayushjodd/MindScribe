@@ -114,7 +114,7 @@ export default function MembershipPage() {
           </div>
           <div className="max-w-7xl mx-auto">
             <div className="text-center">
-              <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 sm:text-4xl">
+              <h1 className="text-2xl font-semibold text-gray-100 dark:text-gray-100 sm:text-4xl">
                 Support great writing and access all stories on MindScribe.
               </h1>
               <p className="mt-2 text-xl text-gray-600 dark:text-gray-400">
