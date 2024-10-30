@@ -20,7 +20,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bookmark, Heart, MessageCircle, Search } from "lucide-react";
+import {
+  Bookmark,
+  Heart,
+  MessageCircle,
+  Search,
+  UserCircle,
+} from "lucide-react";
 import Link from "next/link";
 import NavBar from "@/components/shared/NavBar";
 import { useRouter } from "next/navigation";
@@ -32,6 +38,7 @@ import { IoDiamond } from "react-icons/io5";
 import { FaCrown } from "react-icons/fa";
 import { AnimatedGradientText } from "../ui/MagicUiAnimatedBtn";
 import { cn } from "@/lib/utils";
+import { FaArrowRightLong } from "react-icons/fa6";
 
 const categories = [
   "Programming",
@@ -74,7 +81,7 @@ export default function AllBlogs() {
   const { data: session, status } = useSession();
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<string[]>([]);
   const [likedBlogs, setLikedBlogs] = useState<string[]>([]);
-  const [userDetail, setUserDetail] = useState<any>(null);
+  const [profile, setProfile] = useState<Boolean>(true);
 
   useEffect(() => {
     if (!session) {
@@ -89,7 +96,16 @@ export default function AllBlogs() {
           const response = await axios.get(
             `/api/user/get-user-info/${session.user.id}`
           );
-          setUserDetail(response.data);
+          if (
+            !response.data?.Telegram ||
+            !response.data?.bio ||
+            !response.data?.linkedIn ||
+            !response.data?.personalWebsite ||
+            !response.data?.profilePicture ||
+            !response.data?.twitter
+          ) {
+            setProfile(false);
+          }
           const { likes, bookmarks } = response.data;
           setLikedBlogs(likes.map((like: any) => like.id));
           setBookmarkedBlogs(bookmarks.map((bookmark: any) => bookmark.id));
@@ -180,25 +196,39 @@ export default function AllBlogs() {
     <>
       <Toaster />
       <NavBar />
-      <div className="w-full h-full dark:bg-black bg-white">
+      {!profile && (
+        <div
+          onClick={() => {
+            router.push("/profile");
+          }}
+          className="flex justify-center w-full border bg-purple-500 py-2 hover:cursor-pointer hover:bg-purple-600 transition-all"
+        >
+          <span className="flex items-center space-x-2 text-center">
+            😇 Please complete your profile to get the most out of our platform
+            <FaArrowRightLong className="ml-2" />
+          </span>
+        </div>
+      )}
+      <div className="w-full h-screen dark:bg-black bg-white">
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-4xl mb-8 text-center pointer-events-none z-10 h-full whitespace-pre-wrap bg-gradient-to-br from-[#ff2975] from-35% to-[#00FFF1] bg-clip-text font-bold leading-none tracking-tighter text-transparent dark:drop-shadow-[0_5px_5px_rgba(0,0,0,0.8)">
             Explore Our Blogs
           </h1>
 
           <div className="flex items-center space-x-4 mb-8">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <div className="relative flex-1 focus-within:ring-4 focus-within:ring-blue-200 dark:focus-within:ring-blue-700 rounded-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 dark:text-gray-400 text-slate-700" />
               <Input
                 type="text"
                 placeholder="Search blogs by title or description..."
-                className="pl-10 pr-4 py-2 w-full"
+                className="pl-10 pr-4 py-2 w-full text-slate-700 dark:text-gray-400 focus:outline-none"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+
             <Select onValueChange={handleCategoryChange} defaultValue="all">
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-[180px] text-black dark:text-white">
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent>
@@ -276,7 +306,7 @@ export default function AllBlogs() {
                                 ? "text-yellow-500"
                                 : post.author.membership?.type === "PRO"
                                 ? "text-blue-500"
-                                : "text-white"
+                                : "dark:text-white text-black "
                             }`}
                           >
                             {post.author.name || post.author.username}
