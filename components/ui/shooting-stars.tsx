@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState, useRef } from "react";
+import { useTheme } from "next-themes";
 
 interface ShootingStar {
   id: number;
@@ -22,6 +23,7 @@ interface ShootingStarsProps {
   starWidth?: number;
   starHeight?: number;
   className?: string;
+  backgroundStarCount?: number; // Number of background stars
 }
 
 const getRandomStartPoint = () => {
@@ -41,6 +43,16 @@ const getRandomStartPoint = () => {
       return { x: 0, y: 0, angle: 45 };
   }
 };
+
+// Generates random positions for static background stars
+const generateBackgroundStars = (count: number) =>
+  Array.from({ length: count }, (_, id) => ({
+    id,
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    scale: 0.5 + Math.random() * 0.5, // Varying star sizes
+  }));
+
 export const ShootingStars: React.FC<ShootingStarsProps> = ({
   minSpeed = 10,
   maxSpeed = 30,
@@ -51,9 +63,16 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
   starWidth = 10,
   starHeight = 1,
   className,
+  backgroundStarCount = 100, // Default number of background stars
 }) => {
+  const { theme } = useTheme();
   const [star, setStar] = useState<ShootingStar | null>(null);
+  const [backgroundStars, setBackgroundStars] = useState(() =>
+    generateBackgroundStars(backgroundStarCount)
+  );
   const svgRef = useRef<SVGSVGElement>(null);
+
+  const backgroundStarColor = theme === "light" ? "#c11d84" : "#FFFFFF";
 
   useEffect(() => {
     const createStar = () => {
@@ -74,8 +93,6 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
     };
 
     createStar();
-
-    return () => {};
   }, [minSpeed, maxSpeed, minDelay, maxDelay]);
 
   useEffect(() => {
@@ -91,6 +108,7 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
             prevStar.speed * Math.sin((prevStar.angle * Math.PI) / 180);
           const newDistance = prevStar.distance + prevStar.speed;
           const newScale = 1 + newDistance / 100;
+
           if (
             newX < -20 ||
             newX > window.innerWidth + 20 ||
@@ -119,6 +137,19 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
       ref={svgRef}
       className={cn("w-full h-full absolute inset-0", className)}
     >
+      {/* Background static stars */}
+      {backgroundStars.map((backgroundStar) => (
+        <circle
+          key={backgroundStar.id}
+          cx={backgroundStar.x}
+          cy={backgroundStar.y}
+          r={2 * backgroundStar.scale}
+          fill={backgroundStarColor}
+          opacity={0.8}
+        />
+      ))}
+
+      {/* Shooting star */}
       {star && (
         <rect
           key={star.id}
@@ -132,6 +163,8 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
           }, ${star.y + starHeight / 2})`}
         />
       )}
+
+      {/* Gradient definition for shooting star */}
       <defs>
         <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" style={{ stopColor: trailColor, stopOpacity: 0 }} />
