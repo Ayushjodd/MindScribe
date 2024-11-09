@@ -42,7 +42,7 @@
     "next-auth": "^4.24.10",
     "next-themes": "^0.3.0",
     "nextjs-toploader": "^3.6.15",
-    "nodemailer": "^6.9.15",
+    "nodemailer": "^6.9.16",
     "react": "^18",
     "react-dom": "^18",
     "react-hot-toast": "^2.4.1",

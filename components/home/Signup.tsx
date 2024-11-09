@@ -13,33 +13,107 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast, useToast } from "../../hooks/use-toast";
+import { useToast } from "../../hooks/use-toast";
 import { FcGoogle } from "react-icons/fc";
-import { motion } from "framer-motion";
 import { signIn } from "next-auth/react";
 import { BackgroundBeamsWithCollision } from "../ui/background-beams-with-collision";
 
 export default function Signup() {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsLoading(false);
-    toast({
-      title: "Success!",
-      description: "You've successfully logged in.",
-    });
+
+    try {
+      const result = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success!",
+          description: "You've successfully logged in.",
+        });
+        // You can redirect here if needed
+        window.location.href = "/";
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An error occurred during login.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmailSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      }
+
+      // After successful signup, sign in the user
+      await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      });
+
+      toast({
+        title: "Success!",
+        description: "Account created successfully. You can now log in.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error ? error.message : "Failed to create account",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleGoogleAuth = () => {
     signIn("google", { callbackUrl: "/" });
-    toast({
-      title: "Google Auth",
-      description: "Google authentication would be triggered here.",
-    });
   };
 
   return (
@@ -62,7 +136,7 @@ export default function Signup() {
                   <TabsTrigger value="signup">Sign Up</TabsTrigger>
                 </TabsList>
                 <TabsContent value="login">
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleEmailLogin}>
                     <div className="grid w-full items-center gap-4">
                       <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="email">Email</Label>
@@ -71,6 +145,8 @@ export default function Signup() {
                           placeholder="Enter your email"
                           type="email"
                           required
+                          value={formData.email}
+                          onChange={handleInputChange}
                         />
                       </div>
                       <div className="flex flex-col space-y-1.5">
@@ -80,6 +156,8 @@ export default function Signup() {
                           placeholder="Enter your password"
                           type="password"
                           required
+                          value={formData.password}
+                          onChange={handleInputChange}
                         />
                       </div>
                     </div>
@@ -93,7 +171,7 @@ export default function Signup() {
                   </form>
                 </TabsContent>
                 <TabsContent value="signup">
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleEmailSignup}>
                     <div className="grid w-full items-center gap-4">
                       <div className="flex flex-col space-y-1.5">
                         <Label htmlFor="name">Name</Label>
@@ -101,6 +179,8 @@ export default function Signup() {
                           id="name"
                           placeholder="Enter your name"
                           required
+                          value={formData.name}
+                          onChange={handleInputChange}
                         />
                       </div>
                       <div className="flex flex-col space-y-1.5">
@@ -110,6 +190,8 @@ export default function Signup() {
                           placeholder="Enter your email"
                           type="email"
                           required
+                          value={formData.email}
+                          onChange={handleInputChange}
                         />
                       </div>
                       <div className="flex flex-col space-y-1.5">
@@ -119,6 +201,8 @@ export default function Signup() {
                           placeholder="Choose a password"
                           type="password"
                           required
+                          value={formData.password}
+                          onChange={handleInputChange}
                         />
                       </div>
                     </div>
