@@ -20,13 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Bookmark,
-  Heart,
-  MessageCircle,
-  Search,
-  UserCircle,
-} from "lucide-react";
+import { Bookmark, Heart, Search } from "lucide-react";
 import Link from "next/link";
 import NavBar from "@/components/shared/NavBar";
 import { useRouter } from "next/navigation";
@@ -39,6 +33,7 @@ import { FaCrown } from "react-icons/fa";
 import { AnimatedGradientText } from "../ui/MagicUiAnimatedBtn";
 import { cn } from "@/lib/utils";
 import { FaArrowRightLong } from "react-icons/fa6";
+import Image from "next/image";
 
 const categories = [
   "Programming",
@@ -75,13 +70,13 @@ interface Blog {
 export default function AllBlogs() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [showExclusive, setShowExclusive] = useState(false);
+  const [showExclusive, _setShowExclusive] = useState(false);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const router = useRouter();
   const { data: session, status } = useSession();
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<string[]>([]);
   const [likedBlogs, setLikedBlogs] = useState<string[]>([]);
-  const [profile, setProfile] = useState<Boolean>(true);
+  const [profile, setProfile] = useState<boolean>(true);
 
   useEffect(() => {
     if (!session) {
@@ -107,8 +102,10 @@ export default function AllBlogs() {
             setProfile(false);
           }
           const { likes, bookmarks } = response.data;
-          setLikedBlogs(likes.map((like: any) => like.id));
-          setBookmarkedBlogs(bookmarks.map((bookmark: any) => bookmark.id));
+          setLikedBlogs(likes.map((like: { id: any }) => like.id));
+          setBookmarkedBlogs(
+            bookmarks.map((bookmark: { id: any }) => bookmark.id)
+          );
         } catch (error) {
           console.error("Error fetching user details:", error);
           toast.error("Error fetching user details");
@@ -259,7 +256,7 @@ export default function AllBlogs() {
                 <Card className="overflow-hidden lg:flex">
                   <div className="w-full ">
                     <div className="w-full h-96 flex text-gray-500">
-                      <img src={post.imageUrl || ""} alt={post.title} />
+                      <Image src={post.imageUrl || ""} alt={post.title} />
                     </div>
                   </div>
 

@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    //@ts-ignore
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {

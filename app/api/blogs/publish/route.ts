@@ -8,7 +8,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    //@ts-ignore
     const session = await getServerSession(authOptions);
     if (!session || !session.user) {
       return NextResponse.json(

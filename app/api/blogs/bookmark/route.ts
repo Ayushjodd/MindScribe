@@ -5,8 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   try {
-    //@ts-ignore
-
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {
@@ -36,7 +34,6 @@ export async function POST(req: NextRequest) {
     let updatedBlog;
 
     if (existingBookmark) {
-      // If bookmark exists, remove it
       await prisma.bookmark.delete({
         where: {
           id: existingBookmark.id,
@@ -48,7 +45,6 @@ export async function POST(req: NextRequest) {
         blog: updatedBlog,
       });
     } else {
-      // If bookmark doesn't exist, create it
       const newBookmark = await prisma.bookmark.create({
         data: {
           userId,
@@ -82,9 +78,8 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    //@ts-ignore
     const session = await getServerSession(authOptions);
 
     if (!session || !session.user) {
@@ -124,23 +119,21 @@ export async function GET(req: NextRequest) {
 
     console.log(`Found ${bookmarks.length} bookmarks for user ${userId}`);
 
-    // Restructure the bookmarks to the format your frontend expects
     const formattedBookmarks = bookmarks.map((bookmark) => ({
       id: bookmark.blog.id,
       title: bookmark.blog.title,
-      excerpt: bookmark.blog.description, // Assuming 'description' is equivalent to 'excerpt'
-      image: bookmark.blog.imageUrl, // Ensure the field matches your frontend's 'image'
+      excerpt: bookmark.blog.description,
+      image: bookmark.blog.imageUrl,
       author: bookmark.blog.author.name,
-      date: bookmark.blog.createdAt.toISOString(), // Convert date to string format
-      category: bookmark.blog.category, // You can modify this if you have categories
+      date: bookmark.blog.createdAt.toISOString(),
+      category: bookmark.blog.category,
     }));
 
     return NextResponse.json({
       message: "Bookmarks retrieved successfully",
-      bookmarks: formattedBookmarks, // Return structured data
+      bookmarks: formattedBookmarks,
     });
-  } catch (error: any) {
-    console.error("Detailed error in get bookmarks API:", error.message);
+  } catch (error: unknown) {
     return NextResponse.json(
       {
         message: "An error occurred while retrieving your bookmarks",

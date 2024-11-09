@@ -1,4 +1,5 @@
-import { type NextAuthOptions } from "next-auth";
+import { type NextAuthOptions, Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -15,6 +16,9 @@ declare module "next-auth" {
       image?: string | null;
     };
     accessToken?: string;
+  }
+  interface User {
+    id: string;
   }
 }
 
@@ -82,7 +86,15 @@ export const authOptions: NextAuthOptions = {
     error: "/auth/error",
   },
   callbacks: {
-    async jwt({ token, account, user }) {
+    async jwt({
+      token,
+      account,
+      user,
+    }: {
+      token: JWT;
+      account?: any;
+      user?: any;
+    }) {
       if (account) {
         token.accessToken = account.access_token;
       }
@@ -91,9 +103,15 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }: any) {
+    async session({
+      session,
+      token,
+    }: {
+      session: Session;
+      token: JWT;
+    }): Promise<Session> {
       if (session.user) {
-        session.user.id = token.id;
+        session.user.id = token.id as string;
       }
       if (token.accessToken) {
         session.accessToken = token.accessToken as string;

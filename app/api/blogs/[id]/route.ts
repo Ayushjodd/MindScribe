@@ -11,7 +11,6 @@ export async function GET(
   context: { params: { id: string } }
 ) {
   try {
-    //@ts-ignore
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json(

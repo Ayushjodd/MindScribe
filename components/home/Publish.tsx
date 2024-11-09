@@ -35,6 +35,30 @@ import { useSession } from "next-auth/react";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { IoDiamond } from "react-icons/io5";
 
+interface UserTypes {
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  imageUrl: string;
+  profilePicture: string;
+  bio: string | null;
+  twitter: string | null;
+  linkedIn: string | null;
+  personalWebsite: string | null;
+  Telegram: string | null;
+  stats: {
+    posts: number;
+    likes: number;
+    bookmarks: number;
+    followers: number;
+    following: number;
+  };
+  membership: {
+    type: string;
+  };
+}
+
 export default function BlogPublisher() {
   const [title, setTitle] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -45,7 +69,7 @@ export default function BlogPublisher() {
   const { toast } = useToast();
   const [showConfetti, setShowConfetti] = useState(false);
   const session = useSession();
-  const [userData, setUserData] = useState<any>();
+  const [userData, setUserData] = useState<UserTypes>();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -350,21 +374,21 @@ export default function BlogPublisher() {
                         <div>
                           <p
                             className={`text-sm font-medium ${
-                              userData?.membership.type === "ADVANCE"
+                              userData?.membership?.type === "ADVANCE"
                                 ? "text-yellow-500"
-                                : userData?.membership.type === "PRO"
+                                : userData?.membership?.type === "PRO"
                                 ? "text-blue-500"
                                 : "text-white"
                             }`}
                           >
                             {userData?.name || "Author Name"}
-                            {userData.membership?.type === "ADVANCE" && (
+                            {userData?.membership?.type === "ADVANCE" && (
                               <RiVerifiedBadgeFill
                                 className="inline ml-1 text-yellow-500"
                                 title="Gold Verified"
                               />
                             )}
-                            {userData.membership?.type === "PRO" && (
+                            {userData?.membership?.type === "PRO" && (
                               <IoDiamond
                                 className="inline ml-1 text-blue-500"
                                 title="Pro Member"

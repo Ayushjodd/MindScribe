@@ -8,8 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/seperator";
-import { Bookmark, MessageCircle, Feather } from "lucide-react";
-import Link from "next/link";
+import { Bookmark, MessageCircle } from "lucide-react";
 import NavBar from "@/components/shared/NavBar";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
@@ -18,7 +17,6 @@ import { FaLinkedin } from "react-icons/fa";
 import { FaTelegramPlane } from "react-icons/fa";
 import { FaLink } from "react-icons/fa";
 import Footer from "@/components/shared/Footer";
-import { useSession } from "next-auth/react";
 import { IoDiamond } from "react-icons/io5";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 
@@ -64,13 +62,11 @@ export default function BlogPost() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [blogData, setBlogData] = useState<BlogPost | null>(null);
   const { id } = useParams();
-  const session: any = useSession();
   const router = useRouter();
 
   useEffect(() => {
     async function fetchData() {
       const data = await axios.get(`/api/blogs/${id}`);
-      //@ts-ignore
       setBlogData(data.data?.blog);
       console.log(data);
     }
@@ -82,11 +78,6 @@ export default function BlogPost() {
   }
 
   async function handleFollow() {
-    if (!session?.data.user?.id) {
-      console.log("User must be logged in to follow");
-      return;
-    }
-
     try {
       const response = await axios.post("/api/user/follow", {
         followingId: blogData?.author.id,

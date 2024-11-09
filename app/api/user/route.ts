@@ -5,7 +5,6 @@ import prisma from "@/db/db";
 
 export async function POST(req: NextRequest) {
   try {
-    //@ts-ignore
     const session = await getServerSession(authOptions);
 
     if (!session) {

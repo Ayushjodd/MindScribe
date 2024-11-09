@@ -50,7 +50,7 @@ const MembershipPayment = ({ userId, membershipType }: any) => {
         ADVANCE: 0.05 * 1_000_000_000,
         PRO: 0.1 * 1_000_000_000,
       };
-      //@ts-ignore
+      //@ts-expect-error
       const lamports = lamportsPrice[membershipType] || 1_000_000_000;
 
       const transaction = new Transaction().add(

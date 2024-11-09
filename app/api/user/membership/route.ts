@@ -22,7 +22,6 @@ interface MembershipUpdateRequest {
 
 export async function PUT(request: Request) {
   try {
-    //@ts-ignore
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json(
@@ -32,7 +31,7 @@ export async function PUT(request: Request) {
     }
 
     const body: MembershipUpdateRequest = await request.json();
-    const { userId, membershipType, paymentMethod, transactionId } = body;
+    const { userId, membershipType, paymentMethod } = body;
 
     if (!userId || !membershipType || !paymentMethod) {
       return NextResponse.json(
@@ -109,12 +108,12 @@ export async function PUT(request: Request) {
       },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error updating membership:", error);
     return NextResponse.json(
       {
         message: "An error occurred while updating membership",
-        error: error.message,
+        error: "unknown",
       },
       { status: 500 }
     );

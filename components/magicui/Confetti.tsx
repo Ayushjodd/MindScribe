@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { ReactNode } from "react";
 import React, {
   createContext,
@@ -13,9 +12,7 @@ import type {
   GlobalOptions as ConfettiGlobalOptions,
   CreateTypes as ConfettiInstance,
   Options as ConfettiOptions,
-  //@ts-ignore
 } from "canvas-confetti";
-//@ts-ignore
 import confetti from "canvas-confetti";
 
 import { Button, ButtonProps } from "../ui/button";

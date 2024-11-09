@@ -1,3 +1,7 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "rules": {
+    "jsx-a11y/alt-text": "off", // if it’s related to accessibility
+    "@next/next/no-img-element": "off" // turns off Next.js-specific <img> enforcement
+  }
 }

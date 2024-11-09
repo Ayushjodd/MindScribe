@@ -67,7 +67,6 @@ export default function MembershipPage() {
   const userId = session?.data?.user.id;
 
   useEffect(() => {
-    // Fetch the current SOL to INR exchange rate
     async function fetchExchangeRate() {
       try {
         const response = await fetch(
@@ -82,10 +81,10 @@ export default function MembershipPage() {
     fetchExchangeRate();
   }, []);
 
-  const getSolPrice = (priceInINR: any) =>
-    (priceInINR / solExchangeRate).toFixed(5);
+  // const getSolPrice = (priceInINR: any) =>
+  //   (priceInINR / solExchangeRate).toFixed(5);
 
-  const handleTierSelection = (tierName: any) => {
+  const handleTierSelection = (tierName: string) => {
     setSelectedTier(tierName);
     if (tierName === "BASIC") {
       router.push("/blogs");
