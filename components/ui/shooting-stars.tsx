@@ -67,7 +67,7 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
 }) => {
   const { theme } = useTheme();
   const [star, setStar] = useState<ShootingStar | null>(null);
-  const [backgroundStars, setBackgroundStars] = useState(() =>
+  const [backgroundStars] = useState(() =>
     generateBackgroundStars(backgroundStarCount)
   );
   const svgRef = useRef<SVGSVGElement>(null);

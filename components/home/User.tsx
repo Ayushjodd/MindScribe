@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Grid, Heart, MessageCircle, Users } from "lucide-react";
+import { Grid, Heart, MessageCircle } from "lucide-react";
 import Image from "next/image";
 import NavBar from "@/components/shared/NavBar";
 import { useParams, useRouter } from "next/navigation";
@@ -30,6 +30,56 @@ import {
 } from "@/components/ui/sheet";
 import { IoDiamond } from "react-icons/io5";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
+
+interface Post {
+  id: string;
+  title: string;
+  imageUrl: string | null;
+  description: string;
+  content: string;
+  published: boolean;
+  createdAt: string;
+  likes: number;
+  comments: number;
+}
+
+interface LikedBlog {
+  id: string;
+  blog: {
+    id: string;
+    title: string;
+    imageUrl: string | null;
+    description: string;
+  };
+}
+
+interface BookmarkedBlog {
+  id: string;
+  blog: {
+    id: string;
+    title: string;
+    imageUrl: string | null;
+    description: string;
+  };
+}
+
+interface Follower {
+  id: string;
+  name: string;
+  username: string;
+  imageUrl: string | null;
+  profilePicture?: string;
+  bio?: string;
+}
+
+interface Following {
+  id: string;
+  name: string;
+  username: string;
+  imageUrl: string | null;
+  profilePicture?: string;
+  bio?: string;
+}
 
 interface User {
   id: string;
@@ -57,67 +107,24 @@ interface User {
   };
   membership: {
     type: string;
-  };
-}
-
-interface Post {
-  id: string;
-  title: string;
-  imageUrl: string | null;
-  description: string;
-  content: string;
-  published: boolean;
-  createdAt: string;
-  likes: number;
-  comments: number;
-}
-
-interface LikedBlog {
-  blog: {
-    id: string;
-    title: string;
-    imageUrl: string | null;
-    description: string;
-  };
-}
-
-interface BookmarkedBlog {
-  blog: {
-    id: string;
-    title: string;
-    imageUrl: string | null;
-    description: string;
-  };
-}
-
-interface Follower {
-  id: string;
-  name: string;
-  username: string;
-  imageUrl: string | null;
-}
-
-interface Following {
-  id: string;
-  name: string;
-  username: string;
-  imageUrl: string | null;
+  } | null;
 }
 
 export default function UserProfilePage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [activeTab, setActiveTab] = useState("posts");
   const [userData, setUserData] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const { id } = useParams();
+  const params = useParams();
   const router = useRouter();
+  const id = params?.id as string;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         const response = await axios.get<User>(`/api/user/get-user-info/${id}`);
-        console.log(response);
         setUserData(response.data);
       } catch (err) {
         setError("Failed to load user data");
@@ -132,10 +139,9 @@ export default function UserProfilePage() {
     }
   }, [id]);
 
+  if (loading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
   if (!userData) return <div>No user data available</div>;
-
-  const { posts, likes } = userData;
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -151,9 +157,9 @@ export default function UserProfilePage() {
               />
               <AvatarFallback>{userData.name?.charAt(0) || "U"}</AvatarFallback>
             </Avatar>
-            <h2 className="text-xl  mb-2">
+            <h2 className="text-xl mb-2">
               <p
-                className={`hover:underline cursor-pointer  font-medium ${
+                className={`hover:underline cursor-pointer font-medium ${
                   userData.membership?.type === "ADVANCE"
                     ? "text-yellow-500"
                     : userData.membership?.type === "PRO"
@@ -182,28 +188,32 @@ export default function UserProfilePage() {
 
             <div className="mb-3">
               <div className="flex text-xl gap-4 items-center">
-                <FaXTwitter
-                  className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
-                  onClick={() => {
-                    window.open(`https://x.com/${userData.twitter}`);
-                  }}
-                />
+                {userData.twitter && (
+                  <FaXTwitter
+                    className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
+                    onClick={() => {
+                      window.open(`https://x.com/${userData.twitter}`);
+                    }}
+                  />
+                )}
                 <Separator orientation="vertical" className="h-6 bg-gray-300" />
-                <FaLinkedin
-                  className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
-                  onClick={() => {
-                    window.open(userData.linkedIn || "https://linkedin.com");
-                  }}
-                />
+                {userData.linkedIn && (
+                  <FaLinkedin
+                    className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
+                    onClick={() => {
+                      window.open(userData.linkedIn || "");
+                    }}
+                  />
+                )}
                 <Separator orientation="vertical" className="h-6 bg-gray-300" />
-                <FaLink
-                  className="hover:text-blue-600 cursor-pointer transition-all  text-black dark:text-white"
-                  onClick={() => {
-                    window.open(
-                      userData.personalWebsite || "/humpe-to-hai-hi-naw"
-                    );
-                  }}
-                />
+                {userData.personalWebsite && (
+                  <FaLink
+                    className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
+                    onClick={() => {
+                      window.open(userData.personalWebsite || "");
+                    }}
+                  />
+                )}
               </div>
             </div>
 
@@ -225,14 +235,14 @@ export default function UserProfilePage() {
                     <SheetTitle>Followers</SheetTitle>
                   </SheetHeader>
                   <div className="mt-4 space-y-4">
-                    {userData.followers.map((follower: any) => (
+                    {userData.followers.map((follower) => (
                       <div
                         key={follower.id}
                         className="flex items-center space-x-2"
                       >
                         <Avatar>
                           <AvatarImage
-                            src={follower?.profilePicture || undefined}
+                            src={follower.profilePicture}
                             alt={follower.name}
                           />
                           <AvatarFallback>
@@ -264,14 +274,14 @@ export default function UserProfilePage() {
                     <SheetTitle>Following</SheetTitle>
                   </SheetHeader>
                   <div className="mt-4 space-y-4">
-                    {userData.following.map((following: any) => (
+                    {userData.following.map((following) => (
                       <div
                         key={following.id}
                         className="flex items-center space-x-2"
                       >
                         <Avatar>
                           <AvatarImage
-                            src={following.profilePicture || undefined}
+                            src={following.profilePicture}
                             alt={following.name}
                           />
                           <AvatarFallback>
@@ -305,7 +315,7 @@ export default function UserProfilePage() {
           </TabsList>
           <TabsContent value="posts">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {posts.map((post) => (
+              {userData.posts.map((post) => (
                 <Card key={post.id}>
                   <CardHeader>
                     <CardTitle>{post.title}</CardTitle>
@@ -315,13 +325,14 @@ export default function UserProfilePage() {
                   </CardHeader>
                   <CardContent>
                     {post.imageUrl && (
-                      <Image
-                        src={post.imageUrl}
-                        alt={post.title}
-                        width={500}
-                        height={300}
-                        className="rounded-lg"
-                      />
+                      <div className="relative w-full h-48">
+                        <Image
+                          src={post.imageUrl}
+                          alt={post.title}
+                          fill
+                          className="rounded-lg object-cover"
+                        />
+                      </div>
                     )}
                   </CardContent>
                   <CardFooter className="flex justify-between">
@@ -342,26 +353,27 @@ export default function UserProfilePage() {
           </TabsContent>
           <TabsContent value="likes">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {userData.likes.map((like: any) => (
+              {userData.likes.map((like) => (
                 <Card key={like.id}>
                   <CardHeader>
-                    <CardTitle>{like.title}</CardTitle>
-                    <CardDescription>{like.description}</CardDescription>
+                    <CardTitle>{like.blog.title}</CardTitle>
+                    <CardDescription>{like.blog.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {like.imageUrl && (
-                      <Image
-                        src={like.imageUrl}
-                        alt={like.title}
-                        width={500}
-                        height={300}
-                        className="rounded-lg"
-                      />
+                    {like.blog.imageUrl && (
+                      <div className="relative w-full h-48">
+                        <Image
+                          src={like.blog.imageUrl}
+                          alt={like.blog.title}
+                          fill
+                          className="rounded-lg object-cover"
+                        />
+                      </div>
                     )}
                   </CardContent>
                   <CardFooter>
                     <Button
-                      onClick={() => router.push(`/blog/${like.id}`)}
+                      onClick={() => router.push(`/blog/${like.blog.id}`)}
                       variant="link"
                     >
                       Read More

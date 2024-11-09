@@ -92,7 +92,9 @@ export const authOptions: NextAuthOptions = {
       user,
     }: {
       token: JWT;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       account?: any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       user?: any;
     }) {
       if (account) {

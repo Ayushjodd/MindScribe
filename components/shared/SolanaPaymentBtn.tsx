@@ -5,9 +5,15 @@ import { SiSolana } from "react-icons/si";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import confetti from "canvas-confetti";
-import { useState } from "react";
 
-const MembershipPayment = ({ userId, membershipType }: any) => {
+const MembershipPayment = ({
+  userId,
+  membershipType,
+}: {
+  userId: string | undefined;
+  membershipType: string;
+  onSuccess: (tierName: string) => void;
+}) => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
   const router = useRouter();
@@ -50,7 +56,7 @@ const MembershipPayment = ({ userId, membershipType }: any) => {
         ADVANCE: 0.05 * 1_000_000_000,
         PRO: 0.1 * 1_000_000_000,
       };
-      //@ts-expect-error
+      //@ts-expect-error - lamportsPrice is an object with string indexes for membership types
       const lamports = lamportsPrice[membershipType] || 1_000_000_000;
 
       const transaction = new Transaction().add(

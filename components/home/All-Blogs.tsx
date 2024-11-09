@@ -33,7 +33,6 @@ import { FaCrown } from "react-icons/fa";
 import { AnimatedGradientText } from "../ui/MagicUiAnimatedBtn";
 import { cn } from "@/lib/utils";
 import { FaArrowRightLong } from "react-icons/fa6";
-import Image from "next/image";
 
 const categories = [
   "Programming",
@@ -70,7 +69,7 @@ interface Blog {
 export default function AllBlogs() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [showExclusive, _setShowExclusive] = useState(false);
+  const [showExclusive] = useState(false);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -102,9 +101,9 @@ export default function AllBlogs() {
             setProfile(false);
           }
           const { likes, bookmarks } = response.data;
-          setLikedBlogs(likes.map((like: { id: any }) => like.id));
+          setLikedBlogs(likes.map((like: { id: number }) => like.id));
           setBookmarkedBlogs(
-            bookmarks.map((bookmark: { id: any }) => bookmark.id)
+            bookmarks.map((bookmark: { id: number }) => bookmark.id)
           );
         } catch (error) {
           console.error("Error fetching user details:", error);
@@ -256,7 +255,7 @@ export default function AllBlogs() {
                 <Card className="overflow-hidden lg:flex">
                   <div className="w-full ">
                     <div className="w-full h-96 flex text-gray-500">
-                      <Image src={post.imageUrl || ""} alt={post.title} />
+                      <img src={post.imageUrl || ""} alt={post.title} />
                     </div>
                   </div>
 

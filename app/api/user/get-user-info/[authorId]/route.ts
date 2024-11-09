@@ -1,12 +1,9 @@
 "use server";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import prisma from "@/db/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { authorId: string } }
-) {
+export async function GET({ params }: { params: { authorId: string } }) {
   try {
     const session = await getServerSession(authOptions);
 
@@ -140,7 +137,7 @@ export async function GET(
       bookmarks: author.bookmarks.map((b) => b.blog),
       stats: author._count,
     };
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _count, ...authorDataWithoutCount } = responseData;
     return NextResponse.json(authorDataWithoutCount, { status: 200 });
   } catch (error) {

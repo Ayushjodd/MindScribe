@@ -7,7 +7,6 @@ import { BorderBeam } from "../ui/BorderBeam";
 import BlurIn from "../ui/blur-in";
 import { AnimatedGradientText } from "../ui/MagicUiAnimatedBtn";
 import { cn } from "@/lib/utils";
-import { BackgroundBeamsWithCollision } from "../ui/background-beams-with-collision";
 import { ShootingStars } from "../ui/shooting-stars";
 import { StarsBackground } from "../ui/stars-background";
 

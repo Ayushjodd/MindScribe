@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Card,
@@ -61,25 +61,25 @@ const membershipTiers = [
 export default function MembershipPage() {
   const [selectedTier, setSelectedTier] = useState("Free");
   const [paymentMethod, setPaymentMethod] = useState("upi");
-  const [solExchangeRate, setSolExchangeRate] = useState(0);
+  // const [solExchangeRate, setSolExchangeRate] = useState(0);
   const router = useRouter();
   const session = useSession();
   const userId = session?.data?.user.id;
 
-  useEffect(() => {
-    async function fetchExchangeRate() {
-      try {
-        const response = await fetch(
-          "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=inr"
-        );
-        const data = await response.json();
-        setSolExchangeRate(data.solana.inr);
-      } catch (error) {
-        console.error("Failed to fetch SOL/INR exchange rate:", error);
-      }
-    }
-    fetchExchangeRate();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchExchangeRate() {
+  //     try {
+  //       const response = await fetch(
+  //         "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=inr"
+  //       );
+  //       const data = await response.json();
+  //       setSolExchangeRate(data.solana.inr);
+  //     } catch (error) {
+  //       console.error("Failed to fetch SOL/INR exchange rate:", error);
+  //     }
+  //   }
+  //   fetchExchangeRate();
+  // }, []);
 
   // const getSolPrice = (priceInINR: any) =>
   //   (priceInINR / solExchangeRate).toFixed(5);
