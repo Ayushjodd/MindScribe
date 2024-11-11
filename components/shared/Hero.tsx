@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { RainbowButton } from "../magicui/RaindowButton";
 import { useRouter } from "next/navigation";
