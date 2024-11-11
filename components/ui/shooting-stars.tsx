@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, MutableRefObject } from "react";
 import { useTheme } from "next-themes";
 
 interface ShootingStar {
@@ -11,6 +11,13 @@ interface ShootingStar {
   scale: number;
   speed: number;
   distance: number;
+}
+
+interface BackgroundStar {
+  id: number;
+  x: number;
+  y: number;
+  scale: number;
 }
 
 interface ShootingStarsProps {
@@ -26,30 +33,33 @@ interface ShootingStarsProps {
   backgroundStarCount?: number; // Number of background stars
 }
 
-const getRandomStartPoint = () => {
-  const side = Math.floor(Math.random() * 4);
-  const offset = Math.random() * window.innerWidth;
+const getRandomStartPoint = (): { x: number; y: number; angle: number } => {
+  if (typeof window !== "undefined") {
+    const side = Math.floor(Math.random() * 4);
+    const offset = Math.random() * window.innerWidth;
 
-  switch (side) {
-    case 0:
-      return { x: offset, y: 0, angle: 45 };
-    case 1:
-      return { x: window.innerWidth, y: offset, angle: 135 };
-    case 2:
-      return { x: offset, y: window.innerHeight, angle: 225 };
-    case 3:
-      return { x: 0, y: offset, angle: 315 };
-    default:
-      return { x: 0, y: 0, angle: 45 };
+    switch (side) {
+      case 0:
+        return { x: offset, y: 0, angle: 45 };
+      case 1:
+        return { x: window.innerWidth, y: offset, angle: 135 };
+      case 2:
+        return { x: offset, y: window.innerHeight, angle: 225 };
+      case 3:
+        return { x: 0, y: offset, angle: 315 };
+      default:
+        return { x: 0, y: 0, angle: 45 };
+    }
   }
+  return { x: 0, y: 0, angle: 45 };
 };
 
 // Generates random positions for static background stars
-const generateBackgroundStars = (count: number) =>
+const generateBackgroundStars = (count: number): BackgroundStar[] =>
   Array.from({ length: count }, (_, id) => ({
     id,
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
+    x: typeof window !== "undefined" ? Math.random() * window.innerWidth : 0,
+    y: typeof window !== "undefined" ? Math.random() * window.innerHeight : 0,
     scale: 0.5 + Math.random() * 0.5, // Varying star sizes
   }));
 
@@ -67,37 +77,39 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
 }) => {
   const { theme } = useTheme();
   const [star, setStar] = useState<ShootingStar | null>(null);
-  const [backgroundStars] = useState(() =>
-    generateBackgroundStars(backgroundStarCount)
-  );
-  const svgRef = useRef<SVGSVGElement>(null);
+  const [backgroundStars, setBackgroundStars] = useState<BackgroundStar[]>([]);
+  const svgRef = useRef<SVGSVGElement>(null) as MutableRefObject<SVGSVGElement>;
 
   const backgroundStarColor = theme === "light" ? "#c11d84" : "#FFFFFF";
 
   useEffect(() => {
-    const createStar = () => {
-      const { x, y, angle } = getRandomStartPoint();
-      const newStar: ShootingStar = {
-        id: Date.now(),
-        x,
-        y,
-        angle,
-        scale: 1,
-        speed: Math.random() * (maxSpeed - minSpeed) + minSpeed,
-        distance: 0,
+    if (typeof window !== "undefined") {
+      setBackgroundStars(generateBackgroundStars(backgroundStarCount));
+
+      const createStar = () => {
+        const { x, y, angle } = getRandomStartPoint();
+        const newStar: ShootingStar = {
+          id: Date.now(),
+          x,
+          y,
+          angle,
+          scale: 1,
+          speed: Math.random() * (maxSpeed - minSpeed) + minSpeed,
+          distance: 0,
+        };
+        setStar(newStar);
+
+        const randomDelay = Math.random() * (maxDelay - minDelay) + minDelay;
+        setTimeout(createStar, randomDelay);
       };
-      setStar(newStar);
 
-      const randomDelay = Math.random() * (maxDelay - minDelay) + minDelay;
-      setTimeout(createStar, randomDelay);
-    };
-
-    createStar();
-  }, [minSpeed, maxSpeed, minDelay, maxDelay]);
+      createStar();
+    }
+  }, [minSpeed, maxSpeed, minDelay, maxDelay, backgroundStarCount]);
 
   useEffect(() => {
-    const moveStar = () => {
-      if (star) {
+    if (typeof window !== "undefined" && star) {
+      const moveStar = () => {
         setStar((prevStar) => {
           if (!prevStar) return null;
           const newX =
@@ -111,9 +123,9 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
 
           if (
             newX < -20 ||
-            newX > window.innerWidth + 20 ||
+            newX > (window?.innerWidth || 0) + 20 ||
             newY < -20 ||
-            newY > window.innerHeight + 20
+            newY > (window?.innerHeight || 0) + 20
           ) {
             return null;
           }
@@ -125,11 +137,11 @@ export const ShootingStars: React.FC<ShootingStarsProps> = ({
             scale: newScale,
           };
         });
-      }
-    };
+      };
 
-    const animationFrame = requestAnimationFrame(moveStar);
-    return () => cancelAnimationFrame(animationFrame);
+      const animationFrame = requestAnimationFrame(moveStar);
+      return () => cancelAnimationFrame(animationFrame);
+    }
   }, [star]);
 
   return (
