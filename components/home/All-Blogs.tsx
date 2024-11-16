@@ -72,7 +72,7 @@ export default function AllBlogs() {
   const [showExclusive] = useState(false);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<string[]>([]);
   const [likedBlogs, setLikedBlogs] = useState<string[]>([]);
   const [profile, setProfile] = useState<boolean>(true);
