@@ -238,12 +238,12 @@ export default function UserProfilePage() {
               </p>
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              {userData.bio}
+              {userData?.bio}
             </p>
 
             <div className="mb-3">
               <div className="flex text-xl gap-4 items-center">
-                {userData.twitter && (
+                {userData?.twitter && (
                   <FaXTwitter
                     className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
                     onClick={() => {
@@ -252,20 +252,20 @@ export default function UserProfilePage() {
                   />
                 )}
                 <Separator orientation="vertical" className="h-6 bg-gray-300" />
-                {userData.linkedIn && (
+                {userData?.linkedIn && (
                   <FaLinkedin
                     className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
                     onClick={() => {
-                      window.open(userData.linkedIn || "");
+                      window.open(userData?.linkedIn || "");
                     }}
                   />
                 )}
                 <Separator orientation="vertical" className="h-6 bg-gray-300" />
-                {userData.personalWebsite && (
+                {userData?.personalWebsite && (
                   <FaLink
                     className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
                     onClick={() => {
-                      window.open(userData.personalWebsite || "");
+                      window.open(userData?.personalWebsite || "");
                     }}
                   />
                 )}
@@ -274,13 +274,14 @@ export default function UserProfilePage() {
 
             <div className="flex justify-center space-x-4 mb-4 text-black dark:text-white">
               <div>
-                <span className="font-bold">{userData.stats.posts}</span> posts
+                <span className="font-bold">{userData?.stats?.posts}</span>{" "}
+                posts
               </div>
               <Sheet>
                 <SheetTrigger asChild>
                   <div className="cursor-pointer">
                     <span className="font-bold">
-                      {userData.stats.followers}
+                      {userData?.stats?.followers}
                     </span>{" "}
                     followers
                   </div>
@@ -371,18 +372,18 @@ export default function UserProfilePage() {
           <TabsContent value="posts">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {userData.posts.map((post) => (
-                <Card key={post.id}>
+                <Card key={post?.id}>
                   <CardHeader>
                     <CardTitle>{post?.title}</CardTitle>
                     <CardDescription>
-                      {post.content.substring(0, 100)}...
+                      {post?.content.substring(0, 100)}...
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {post.imageUrl && (
+                    {post?.imageUrl && (
                       <div className="relative w-full h-48">
                         <Image
-                          src={post.imageUrl}
+                          src={post?.imageUrl}
                           alt={post?.title}
                           fill
                           className="rounded-lg object-cover"
@@ -415,10 +416,10 @@ export default function UserProfilePage() {
                     <CardDescription>{like?.blog?.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {like.blog.imageUrl && (
+                    {like.blog?.imageUrl && (
                       <div className="relative w-full h-48">
                         <Image
-                          src={like.blog.imageUrl}
+                          src={like.blog?.imageUrl}
                           alt={like.blog?.title}
                           fill
                           className="rounded-lg object-cover"
