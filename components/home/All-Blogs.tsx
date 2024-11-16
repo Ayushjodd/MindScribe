@@ -80,7 +80,7 @@ export default function AllBlogs() {
   useEffect(() => {
     if (!session) {
       toast.error("Login required");
-      router.push("/signin");
+      router.push("/signup");
     }
   }, [session]);
 

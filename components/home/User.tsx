@@ -110,21 +110,54 @@ interface User {
   } | null;
 }
 
+const defaultUserData: User = {
+  id: "",
+  username: "",
+  name: "",
+  email: "",
+  imageUrl: "",
+  profilePicture: "",
+  bio: null,
+  twitter: null,
+  linkedIn: null,
+  personalWebsite: null,
+  Telegram: null,
+  posts: [],
+  likes: [],
+  bookmarks: [],
+  followers: [],
+  following: [],
+  stats: {
+    posts: 0,
+    likes: 0,
+    bookmarks: 0,
+    followers: 0,
+    following: 0,
+  },
+  membership: null,
+};
+
 export default function UserProfilePage() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+	 // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [activeTab, setActiveTab] = useState("posts");
-  const [userData, setUserData] = useState<User | null>(null);
+  const [userData, setUserData] = useState<User>(defaultUserData);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const params = useParams();
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
-  const id = params?.id as string;
+  const params = useParams();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!params?.id) return;
+
       try {
         setLoading(true);
-        const response = await axios.get<User>(`/api/user/get-user-info/${id}`);
+        const response = await axios.get<User>(`/api/user/get-user-info/${params.id}`);
         setUserData(response.data);
       } catch (err) {
         setError("Failed to load user data");
@@ -134,14 +167,30 @@ export default function UserProfilePage() {
       }
     };
 
-    if (id) {
+    if (mounted) {
       fetchData();
     }
-  }, [id]);
+  }, [params?.id, mounted]);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-  if (!userData) return <div>No user data available</div>;
+  if (!mounted) return null;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <NavBar />
+        <div className="container mx-auto px-4 py-8 text-center">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <NavBar />
+        <div className="container mx-auto px-4 py-8 text-center text-red-500">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -224,9 +273,7 @@ export default function UserProfilePage() {
               <Sheet>
                 <SheetTrigger asChild>
                   <div className="cursor-pointer">
-                    <span className="font-bold">
-                      {userData.stats.followers}
-                    </span>{" "}
+                    <span className="font-bold">{userData.stats.followers}</span>{" "}
                     followers
                   </div>
                 </SheetTrigger>
@@ -245,15 +292,11 @@ export default function UserProfilePage() {
                             src={follower.profilePicture}
                             alt={follower.name}
                           />
-                          <AvatarFallback>
-                            {follower.name.charAt(0)}
-                          </AvatarFallback>
+                          <AvatarFallback>{follower.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div>
                           <p className="font-semibold">{follower.name}</p>
-                          <p className="text-sm text-gray-500">
-                            {follower.bio}
-                          </p>
+                          <p className="text-sm text-gray-500">{follower.bio}</p>
                         </div>
                       </div>
                     ))}
@@ -263,9 +306,7 @@ export default function UserProfilePage() {
               <Sheet>
                 <SheetTrigger asChild>
                   <div className="cursor-pointer">
-                    <span className="font-bold">
-                      {userData.stats.following}
-                    </span>{" "}
+                    <span className="font-bold">{userData.stats.following}</span>{" "}
                     following
                   </div>
                 </SheetTrigger>
@@ -284,15 +325,11 @@ export default function UserProfilePage() {
                             src={following.profilePicture}
                             alt={following.name}
                           />
-                          <AvatarFallback>
-                            {following.name.charAt(0)}
-                          </AvatarFallback>
+                          <AvatarFallback>{following.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div>
                           <p className="font-semibold">{following.name}</p>
-                          <p className="text-sm text-gray-500">
-                            {following.bio}
-                          </p>
+                          <p className="text-sm text-gray-500">{following.bio}</p>
                         </div>
                       </div>
                     ))}
