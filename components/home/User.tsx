@@ -318,7 +318,7 @@ export default function UserProfilePage() {
               {userData.posts.map((post) => (
                 <Card key={post.id}>
                   <CardHeader>
-                    <CardTitle>{post.title}</CardTitle>
+                    <CardTitle>{post?.title}</CardTitle>
                     <CardDescription>
                       {post.content.substring(0, 100)}...
                     </CardDescription>
@@ -328,7 +328,7 @@ export default function UserProfilePage() {
                       <div className="relative w-full h-48">
                         <Image
                           src={post.imageUrl}
-                          alt={post.title}
+                          alt={post?.title}
                           fill
                           className="rounded-lg object-cover"
                         />
@@ -356,7 +356,7 @@ export default function UserProfilePage() {
               {userData.likes.map((like) => (
                 <Card key={like.id}>
                   <CardHeader>
-                    <CardTitle>{like.blog.title}</CardTitle>
+                    <CardTitle>{like.blog?.title}</CardTitle>
                     <CardDescription>{like.blog.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -364,7 +364,7 @@ export default function UserProfilePage() {
                       <div className="relative w-full h-48">
                         <Image
                           src={like.blog.imageUrl}
-                          alt={like.blog.title}
+                          alt={like.blog?.title}
                           fill
                           className="rounded-lg object-cover"
                         />

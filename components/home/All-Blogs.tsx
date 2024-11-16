@@ -80,6 +80,7 @@ export default function AllBlogs() {
   useEffect(() => {
     if (!session) {
       toast.error("Login required");
+      router.push("/signin");
     }
   }, [session]);
 
@@ -184,10 +185,6 @@ export default function AllBlogs() {
     return matchesSearch && matchesCategory && matchesExclusive;
   });
 
-  if (status === "loading") {
-    return;
-  }
-
   return (
     <>
       <Toaster />
@@ -264,6 +261,7 @@ export default function AllBlogs() {
                       <div className="flex items-center justify-between mb-2">
                         <Badge variant="secondary">{post.category}</Badge>
                         <Button
+                          className=" focus:ring-2 focus:ring-blue-300"
                           variant="ghost"
                           size="icon"
                           onClick={() => handleBookmark(post.id)}
