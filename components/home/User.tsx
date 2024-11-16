@@ -138,7 +138,7 @@ const defaultUserData: User = {
 };
 
 export default function UserProfilePage() {
-	 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [activeTab, setActiveTab] = useState("posts");
   const [userData, setUserData] = useState<User>(defaultUserData);
   const [loading, setLoading] = useState(true);
@@ -157,7 +157,9 @@ export default function UserProfilePage() {
 
       try {
         setLoading(true);
-        const response = await axios.get<User>(`/api/user/get-user-info/${params.id}`);
+        const response = await axios.get<User>(
+          `/api/user/get-user-info/${params.id}`
+        );
         setUserData(response.data);
       } catch (err) {
         setError("Failed to load user data");
@@ -178,7 +180,9 @@ export default function UserProfilePage() {
     return (
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
         <NavBar />
-        <div className="container mx-auto px-4 py-8 text-center">Loading...</div>
+        <div className="container mx-auto px-4 py-8 text-center">
+          Loading...
+        </div>
       </div>
     );
   }
@@ -187,7 +191,9 @@ export default function UserProfilePage() {
     return (
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
         <NavBar />
-        <div className="container mx-auto px-4 py-8 text-center text-red-500">{error}</div>
+        <div className="container mx-auto px-4 py-8 text-center text-red-500">
+          {error}
+        </div>
       </div>
     );
   }
@@ -273,7 +279,9 @@ export default function UserProfilePage() {
               <Sheet>
                 <SheetTrigger asChild>
                   <div className="cursor-pointer">
-                    <span className="font-bold">{userData.stats.followers}</span>{" "}
+                    <span className="font-bold">
+                      {userData.stats.followers}
+                    </span>{" "}
                     followers
                   </div>
                 </SheetTrigger>
@@ -292,11 +300,15 @@ export default function UserProfilePage() {
                             src={follower.profilePicture}
                             alt={follower.name}
                           />
-                          <AvatarFallback>{follower.name.charAt(0)}</AvatarFallback>
+                          <AvatarFallback>
+                            {follower.name.charAt(0)}
+                          </AvatarFallback>
                         </Avatar>
                         <div>
                           <p className="font-semibold">{follower.name}</p>
-                          <p className="text-sm text-gray-500">{follower.bio}</p>
+                          <p className="text-sm text-gray-500">
+                            {follower.bio}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -306,7 +318,9 @@ export default function UserProfilePage() {
               <Sheet>
                 <SheetTrigger asChild>
                   <div className="cursor-pointer">
-                    <span className="font-bold">{userData.stats.following}</span>{" "}
+                    <span className="font-bold">
+                      {userData.stats.following}
+                    </span>{" "}
                     following
                   </div>
                 </SheetTrigger>
@@ -325,11 +339,15 @@ export default function UserProfilePage() {
                             src={following.profilePicture}
                             alt={following.name}
                           />
-                          <AvatarFallback>{following.name.charAt(0)}</AvatarFallback>
+                          <AvatarFallback>
+                            {following.name.charAt(0)}
+                          </AvatarFallback>
                         </Avatar>
                         <div>
                           <p className="font-semibold">{following.name}</p>
-                          <p className="text-sm text-gray-500">{following.bio}</p>
+                          <p className="text-sm text-gray-500">
+                            {following.bio}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -394,7 +412,7 @@ export default function UserProfilePage() {
                 <Card key={like.id}>
                   <CardHeader>
                     <CardTitle>{like.blog?.title}</CardTitle>
-                    <CardDescription>{like.blog.description}</CardDescription>
+                    <CardDescription>{like?.blog?.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     {like.blog.imageUrl && (
