@@ -9,21 +9,13 @@ export async function POST(req: Request) {
 
     if (!session?.user?.id) {
       return NextResponse.json(
-        { message: "Please login to perform this action", isFollowing: false },
+        { message: "Please log in to perform this action", isFollowing: false },
         { status: 401 }
       );
     }
 
-    let followingId;
-    try {
-      const body = await req.json();
-      followingId = body.followingId;
-    } catch (error) {
-      return NextResponse.json(
-        { message: "Invalid request body", isFollowing: false },
-        { status: 400 }
-      );
-    }
+    const body = await req.json();
+    const { followingId } = body;
 
     if (!followingId) {
       return NextResponse.json(
@@ -39,33 +31,52 @@ export async function POST(req: Request) {
       );
     }
 
-    const existingFollow = await prisma.follow.findUnique({
+    const existingFollowing = await prisma.userFollowing.findUnique({
       where: {
-        followerId_followingId: {
-          followerId: session.user.id,
+        userId_followingId: {
+          userId: session.user.id,
           followingId,
         },
       },
     });
 
-    if (existingFollow) {
-      await prisma.follow.delete({
-        where: {
-          id: existingFollow.id,
-        },
-      });
+    if (existingFollowing) {
+      await prisma.$transaction([
+        prisma.userFollowing.delete({
+          where: {
+            id: existingFollowing.id,
+          },
+        }),
+        prisma.userFollowers.delete({
+          where: {
+            userId_followerId: {
+              userId: followingId,
+              followerId: session.user.id,
+            },
+          },
+        }),
+      ]);
+
       return NextResponse.json(
         { message: "Unfollowed the user successfully", isFollowing: false },
         { status: 200 }
       );
     }
 
-    await prisma.follow.create({
-      data: {
-        followerId: session.user.id,
-        followingId,
-      },
-    });
+    await prisma.$transaction([
+      prisma.userFollowing.create({
+        data: {
+          userId: session.user.id,
+          followingId: followingId,
+        },
+      }),
+      prisma.userFollowers.create({
+        data: {
+          userId: followingId,
+          followerId: session.user.id,
+        },
+      }),
+    ]);
 
     return NextResponse.json(
       { message: "Followed the user successfully", isFollowing: true },
