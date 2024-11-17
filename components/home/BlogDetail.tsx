@@ -19,6 +19,7 @@ import { FaLink } from "react-icons/fa";
 import Footer from "@/components/shared/Footer";
 import { IoDiamond } from "react-icons/io5";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
+import { useSession } from "next-auth/react";
 
 interface BlogPost {
   title: string;
@@ -63,6 +64,7 @@ export default function BlogPost() {
   const [blogData, setBlogData] = useState<BlogPost | null>(null);
   const { id } = useParams();
   const router = useRouter();
+  const session = useSession();
 
   useEffect(() => {
     async function fetchData() {
@@ -153,13 +155,16 @@ export default function BlogPost() {
                     <span>{calculateReadingTime(blogData.content)}</span>
                   </div>
                 </div>
-                <Button
-                  variant={isFollowing ? "secondary" : "default"}
-                  size="sm"
-                  onClick={handleFollow}
-                >
-                  {isFollowing ? "Following" : "Follow"}
-                </Button>
+                {session.data?.user.id === blogData.author.id ? (
+                  <span></span>
+                ) : (
+                  <Button
+                    variant={isFollowing ? "destructive" : "secondary"}
+                    onClick={handleFollow}
+                  >
+                    {isFollowing ? "Following" : "Follow"}
+                  </Button>
+                )}
               </div>
 
               <div className="flex items-center space-x-4 mb-6">
@@ -280,13 +285,16 @@ export default function BlogPost() {
                   <p className="text-gray-600 dark:text-gray-400 mb-2">
                     {blogData.author.bio}
                   </p>
-                  <Button
-                    variant={isFollowing ? "secondary" : "default"}
-                    size="sm"
-                    onClick={handleFollow}
-                  >
-                    {isFollowing ? "Following" : "Follow"}
-                  </Button>
+                  {session.data?.user.id === blogData.author.id ? (
+                    <span></span>
+                  ) : (
+                    <Button
+                      variant={isFollowing ? "destructive" : "secondary"}
+                      onClick={handleFollow}
+                    >
+                      {isFollowing ? "Following" : "Follow"}
+                    </Button>
+                  )}
                 </div>
               </div>
             </motion.article>
