@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/sheet";
 import { IoDiamond } from "react-icons/io5";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
+import { useSession } from "next-auth/react";
 
 interface Post {
   id: string;
@@ -146,6 +147,24 @@ export default function UserProfilePage() {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const params = useParams();
+  const [isFollowing, setIsFollowing] = useState(false);
+  const session = useSession();
+
+  async function handleFollow() {
+    try {
+      const response = await axios.post("/api/user/follow", {
+        followingId: userData.id,
+      });
+
+      if (response.data.message.includes("Unfollowed")) {
+        setIsFollowing(false);
+      } else {
+        setIsFollowing(true);
+      }
+    } catch (error) {
+      console.error("Error following/unfollowing user:", error);
+    }
+  }
 
   useEffect(() => {
     setMounted(true);
@@ -160,6 +179,7 @@ export default function UserProfilePage() {
         const response = await axios.get<User>(
           `/api/user/get-user-info/${params.id}`
         );
+        console.log(response);
         setUserData(response.data);
       } catch (err) {
         setError("Failed to load user data");
@@ -212,31 +232,43 @@ export default function UserProfilePage() {
               />
               <AvatarFallback>{userData.name?.charAt(0) || "U"}</AvatarFallback>
             </Avatar>
-            <h2 className="text-xl mb-2">
-              <p
-                className={`hover:underline cursor-pointer font-medium ${
-                  userData.membership?.type === "ADVANCE"
-                    ? "text-yellow-500"
-                    : userData.membership?.type === "PRO"
-                    ? "text-blue-500"
-                    : "text-white"
-                }`}
-              >
-                {userData.name || userData.username}
-                {userData.membership?.type === "ADVANCE" && (
-                  <RiVerifiedBadgeFill
-                    className="inline ml-1 text-yellow-500"
-                    title="Gold Verified"
-                  />
-                )}
-                {userData.membership?.type === "PRO" && (
-                  <IoDiamond
-                    className="inline ml-1 text-blue-500"
-                    title="Pro Member"
-                  />
-                )}
-              </p>
-            </h2>
+            <div className="flex gap-2">
+              <h2 className="text-xl mb-2">
+                <p
+                  className={`hover:underline cursor-pointer font-medium ${
+                    userData.membership?.type === "ADVANCE"
+                      ? "text-yellow-500"
+                      : userData.membership?.type === "PRO"
+                      ? "text-blue-500"
+                      : "text-white"
+                  }`}
+                >
+                  {userData.name || userData.username}
+                  {userData.membership?.type === "ADVANCE" && (
+                    <RiVerifiedBadgeFill
+                      className="inline ml-1 text-yellow-500"
+                      title="Gold Verified"
+                    />
+                  )}
+                  {userData.membership?.type === "PRO" && (
+                    <IoDiamond
+                      className="inline ml-1 text-blue-500"
+                      title="Pro Member"
+                    />
+                  )}
+                </p>
+              </h2>
+              {session.data?.user.id === userData.id ? (
+                <span className="text-lg"></span>
+              ) : (
+                <Button
+                  variant={isFollowing ? "destructive" : "secondary"}
+                  onClick={handleFollow}
+                >
+                  {isFollowing ? "unfollow" : "Follow"}
+                </Button>
+              )}
+            </div>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               {userData?.bio}
             </p>
