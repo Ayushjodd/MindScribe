@@ -31,31 +31,23 @@ export async function POST(req: Request) {
       );
     }
 
-    const existingFollowing = await prisma.userFollowing.findUnique({
+    // Check if the follow relationship already exists
+    const existingFollow = await prisma.follow.findUnique({
       where: {
-        userId_followingId: {
-          userId: session.user.id,
-          followingId,
+        followerId_followingId: {
+          followerId: session.user.id,
+          followingId: followingId,
         },
       },
     });
 
-    if (existingFollowing) {
-      await prisma.$transaction([
-        prisma.userFollowing.delete({
-          where: {
-            id: existingFollowing.id,
-          },
-        }),
-        prisma.userFollowers.delete({
-          where: {
-            userId_followerId: {
-              userId: followingId,
-              followerId: session.user.id,
-            },
-          },
-        }),
-      ]);
+    if (existingFollow) {
+      // Unfollow: Delete the existing follow relationship
+      await prisma.follow.delete({
+        where: {
+          id: existingFollow.id,
+        },
+      });
 
       return NextResponse.json(
         { message: "Unfollowed the user successfully", isFollowing: false },
@@ -63,20 +55,13 @@ export async function POST(req: Request) {
       );
     }
 
-    await prisma.$transaction([
-      prisma.userFollowing.create({
-        data: {
-          userId: session.user.id,
-          followingId: followingId,
-        },
-      }),
-      prisma.userFollowers.create({
-        data: {
-          userId: followingId,
-          followerId: session.user.id,
-        },
-      }),
-    ]);
+    // Create new follow relationship
+    await prisma.follow.create({
+      data: {
+        followerId: session.user.id,
+        followingId: followingId,
+      },
+    });
 
     return NextResponse.json(
       { message: "Followed the user successfully", isFollowing: true },
