@@ -160,7 +160,9 @@ export default function AllBlogs() {
         toast.success("Blog bookmarked");
       } else {
         setBookmarkedBlogs((prev) => prev.filter((id) => id !== blogId));
-        toast.success("Bookmark removed");
+        toast("Bookmark removed", {
+          icon: "🗑",
+        });
       }
     } catch (e) {
       console.error("Error bookmarking the blog:", e);
@@ -261,7 +263,7 @@ export default function AllBlogs() {
                       <div className="flex items-center justify-between mb-2">
                         <Badge variant="secondary">{post.category}</Badge>
                         <Button
-                          className=" focus:ring-2 focus:ring-blue-300"
+                          className=""
                           variant="ghost"
                           size="icon"
                           onClick={() => handleBookmark(post.id)}
@@ -324,28 +326,24 @@ export default function AllBlogs() {
                       </div>
                     </CardContent>
                     <CardFooter className="flex justify-between">
-                      <div className="flex items-center space-x-4">
-                        <Button
-                          className=""
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleLike(post.id, index)}
-                        >
-                          <Heart
-                            className={`h-5  w-5 z-10 ${
-                              likedBlogs.includes(post.id)
-                                ? "text-red-500"
-                                : "text-gray-500"
-                            }`}
-                          />
-                          {post.likes > 0 && (
-                            <span className="text-xs ml-1">{post.likes}</span>
-                          )}
-                        </Button>
-                        {/* <Button variant="ghost" size="sm">
-                          <MessageCircle className="h-5 w-5 mr-1" />0
-                        </Button> */}
-                      </div>
+                      <Button
+                        className=""
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleLike(post.id, index)}
+                      >
+                        <Heart
+                          className={`h-5  w-5 z-10 ${
+                            likedBlogs.includes(post.id)
+                              ? "text-red-500"
+                              : "text-gray-500"
+                          }`}
+                        />
+                        {post.likes > 0 && (
+                          <span className="text-xs ml-1">{post.likes}</span>
+                        )}
+                      </Button>
+
                       <Button className="z-40" variant="default" size="lg">
                         <Link href={`/blog/${post.id}`}>Read More</Link>
                       </Button>

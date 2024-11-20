@@ -46,12 +46,10 @@ interface Post {
 
 interface LikedBlog {
   id: string;
-  blog: {
-    id: string;
-    title: string;
-    imageUrl: string | null;
-    description: string;
-  };
+  title: string;
+  imageUrl: string | null;
+  description: string;
+  likes: string;
 }
 
 interface BookmarkedBlog {
@@ -277,7 +275,7 @@ export default function UserProfilePage() {
               <div className="flex text-xl gap-4 items-center">
                 {userData?.twitter && (
                   <FaXTwitter
-                    className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
+                    className="hover:text-blue-600 cursor-pointer  text-black dark:text-white"
                     onClick={() => {
                       window.open(`https://x.com/${userData.twitter}`);
                     }}
@@ -286,7 +284,7 @@ export default function UserProfilePage() {
                 <Separator orientation="vertical" className="h-6 bg-gray-300" />
                 {userData?.linkedIn && (
                   <FaLinkedin
-                    className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
+                    className="hover:text-blue-600 cursor-pointer  text-black dark:text-white"
                     onClick={() => {
                       window.open(userData?.linkedIn || "");
                     }}
@@ -295,7 +293,7 @@ export default function UserProfilePage() {
                 <Separator orientation="vertical" className="h-6 bg-gray-300" />
                 {userData?.personalWebsite && (
                   <FaLink
-                    className="hover:text-blue-600 cursor-pointer transition-all text-black dark:text-white"
+                    className="hover:text-blue-600 cursor-pointer  text-black dark:text-white"
                     onClick={() => {
                       window.open(userData?.personalWebsite || "");
                     }}
@@ -432,7 +430,6 @@ export default function UserProfilePage() {
                     </Button>
                     <div className="flex items-center">
                       <Heart className="mr-2" /> {post.likes}
-                      <MessageCircle className="ml-4 mr-2" /> {post.comments}
                     </div>
                   </CardFooter>
                 </Card>
@@ -444,28 +441,33 @@ export default function UserProfilePage() {
               {userData.likes.map((like) => (
                 <Card key={like.id}>
                   <CardHeader>
-                    <CardTitle>{like.blog?.title}</CardTitle>
-                    <CardDescription>{like?.blog?.description}</CardDescription>
+                    <CardTitle>{like?.title}</CardTitle>
+                    <CardDescription>
+                      {like?.description.substring(0, 100)}...
+                    </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {like.blog?.imageUrl && (
+                    {like?.imageUrl && (
                       <div className="relative w-full h-48">
                         <Image
-                          src={like.blog?.imageUrl}
-                          alt={like.blog?.title}
+                          src={like?.imageUrl}
+                          alt={like?.title}
                           fill
                           className="rounded-lg object-cover"
                         />
                       </div>
                     )}
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="flex justify-between">
                     <Button
-                      onClick={() => router.push(`/blog/${like.blog.id}`)}
+                      onClick={() => router.push(`/blog/${like.id}`)}
                       variant="link"
                     >
                       Read More
                     </Button>
+                    <div className="flex items-center">
+                      <Heart className="mr-2" /> {like.likes}
+                    </div>
                   </CardFooter>
                 </Card>
               ))}

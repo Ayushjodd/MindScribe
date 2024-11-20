@@ -109,7 +109,7 @@ export async function GET() {
             author: {
               select: {
                 name: true,
-                image: true,
+                profilePicture: true,
               },
             },
           },
@@ -127,6 +127,7 @@ export async function GET() {
       author: bookmark.blog.author.name,
       date: bookmark.blog.createdAt.toISOString(),
       category: bookmark.blog.category,
+      profilePicture: bookmark.blog.author.profilePicture,
     }));
 
     return NextResponse.json({

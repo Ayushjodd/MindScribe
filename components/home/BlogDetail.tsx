@@ -20,6 +20,7 @@ import Footer from "@/components/shared/Footer";
 import { IoDiamond } from "react-icons/io5";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { useSession } from "next-auth/react";
+import toast, { Toaster } from "react-hot-toast";
 
 interface BlogPost {
   claps: number;
@@ -93,6 +94,20 @@ export default function BlogPost() {
     }
   }
 
+  const handleBookmark = async (blogId: string) => {
+    try {
+      const res = await axios.post("/api/blogs/bookmark", { blogId });
+      if (res.data.message.includes("added")) {
+        toast.success("Blog bookmarked");
+      } else {
+        toast.success("Bookmark removed");
+      }
+    } catch (e) {
+      console.error("Error bookmarking the blog:", e);
+      toast.error("Error bookmarking the blog");
+    }
+  };
+
   async function handleFollow() {
     try {
       const response = await axios.post("/api/user/follow", {
@@ -111,6 +126,7 @@ export default function BlogPost() {
 
   return (
     <>
+      <Toaster />
       <div className={`min-h-screen `}>
         <div className="bg-white dark:bg-[#0e1119] text-gray-900 dark:text-gray-100 transition-colors duration-300">
           <NavBar />
@@ -247,12 +263,14 @@ export default function BlogPost() {
                   >
                     👏 {claps}
                   </Button>
-                  <Button variant="ghost" size="icon">
-                    <MessageCircle className="h-5 w-5" />
-                  </Button>
                 </div>
-                <Button variant="ghost" size="icon">
-                  <Bookmark className="h-5 w-5" />
+                <Button
+                  className=" "
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handleBookmark(blogData.id)}
+                >
+                  <Bookmark className={`h-5 w-5 z-50 `} />
                 </Button>
               </div>
 

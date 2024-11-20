@@ -19,6 +19,7 @@ import Link from "next/link";
 import Image from "next/image";
 import NavBar from "@/components/shared/NavBar";
 import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 interface Bookmark {
   id: number;
@@ -27,17 +28,20 @@ interface Bookmark {
   image: string;
   excerpt: string;
   author: string;
+  profilePicture: string;
   date: string;
 }
 
 export default function BookmarksPage() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [refetch, setRefetch] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchBookmarks() {
       try {
         const response = await axios.get("/api/blogs/bookmark");
+        console.log(response);
         const bookmarkData = Array.isArray(response.data.bookmarks)
           ? response.data.bookmarks
           : [];
@@ -47,7 +51,24 @@ export default function BookmarksPage() {
       }
     }
     fetchBookmarks();
-  }, []);
+  }, [refetch]);
+
+  async function handleBookmarkDelete(blogId: number) {
+    try {
+      const res = await axios.post("/api/blogs/bookmark", { blogId });
+      if (res.data.message.includes("added")) {
+        toast.success("Blog bookmarked");
+      } else {
+        toast("Bookmark removed", {
+          icon: "🗑",
+        });
+        setRefetch(!refetch);
+      }
+    } catch (e) {
+      console.error("Error bookmarking the blog:", e);
+      toast.error("Error bookmarking the blog");
+    }
+  }
 
   const filteredBookmarks = bookmarks.filter(
     (bookmark) =>
@@ -55,12 +76,9 @@ export default function BookmarksPage() {
       bookmark.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const removeBookmark = (id: number) => {
-    setBookmarks(bookmarks.filter((bookmark) => bookmark.id !== id));
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+      <Toaster />
       <NavBar />
 
       <main className="container mx-auto px-4 py-8">
@@ -126,7 +144,7 @@ export default function BookmarksPage() {
                     <div className="flex items-center space-x-2">
                       <Avatar className="h-8 w-8">
                         <AvatarImage
-                          src={bookmark.author}
+                          src={bookmark.profilePicture}
                           alt={bookmark.author}
                         />
                         <AvatarFallback>{bookmark.author[0]}</AvatarFallback>
@@ -134,7 +152,7 @@ export default function BookmarksPage() {
                       <div>
                         <p className="text-sm font-medium">{bookmark.author}</p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                          {bookmark.date}
+                          {new Date(bookmark.date).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
@@ -145,7 +163,7 @@ export default function BookmarksPage() {
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => removeBookmark(bookmark.id)}
+                        onClick={() => handleBookmarkDelete(bookmark.id)}
                         aria-label="Remove bookmark"
                       >
                         <Trash2 className="h-4 w-4" />

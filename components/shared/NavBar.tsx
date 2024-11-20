@@ -30,7 +30,7 @@ const NavBar = () => {
       <header className="dark:shadow-xl fixed top-0 left-0 right-0 z-50 py-3 border-b px-4 lg:px-6 h-14 flex items-center bg-white  backdrop-blur-md  dark:bg-black dark:bg-opacity-90">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link className="flex items-center" href="#">
+            <Link className="flex items-center" href="/">
               <Feather className="h-8 w-8 text-primary" />
               <span className="ml-2 text-xl font-bold text-primary">
                 MindScribe
@@ -47,7 +47,7 @@ const NavBar = () => {
                 className="hover:underline text-md font-medium text-gray-500 hover:text-primary dark:text-gray-300"
                 href="/blogs"
               >
-                All-Blogs
+                Read
               </Link>
               <Link
                 className="hover:underline text-md font-medium text-gray-500 hover:text-primary dark:text-gray-300"
@@ -82,7 +82,7 @@ const NavBar = () => {
                   <DropdownMenuContent>
                     <DropdownMenuItem
                       onClick={() => {
-                        router.push("/profile");
+                        router.push(`/user/${session.user.id}`);
                       }}
                     >
                       <div className="flex">
