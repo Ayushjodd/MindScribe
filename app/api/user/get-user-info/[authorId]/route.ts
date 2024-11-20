@@ -1,13 +1,10 @@
 "use server";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import prisma from "@/db/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
-export async function GET(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  req: NextRequest,
-  { params }: { params: { authorId: string } }
-) {
+
+export async function GET({ params }: { params: { authorId: string } }) {
   try {
     const session = await getServerSession(authOptions);
 
