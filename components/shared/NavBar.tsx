@@ -69,7 +69,7 @@ const NavBar = () => {
               {session ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Avatar className="cursor-pointer">
+                    <Avatar className=" select-none cursor-pointer">
                       <AvatarImage
                         src={session.user?.image || ""}
                         alt="User Avatar"

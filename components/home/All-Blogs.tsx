@@ -23,7 +23,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bookmark, Heart, Search } from "lucide-react";
 import Link from "next/link";
 import NavBar from "@/components/shared/NavBar";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
@@ -72,15 +72,16 @@ export default function AllBlogs() {
   const [showExclusive] = useState(false);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const router = useRouter();
-  const { data: session } = useSession();
+  const session = useSession();
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<string[]>([]);
   const [likedBlogs, setLikedBlogs] = useState<string[]>([]);
   const [profile, setProfile] = useState<boolean>(true);
 
   useEffect(() => {
+    if (session.status === "loading") return;
     if (!session) {
       toast.error("Login required");
-      router.push("/signup");
+      redirect("/signup");
     }
   }, [session, router]);
 
@@ -89,7 +90,7 @@ export default function AllBlogs() {
       if (session) {
         try {
           const response = await axios.get(
-            `/api/user/get-user-info/${session.user.id}`
+            `/api/user/get-user-info/${session.data?.user.id}`
           );
           if (
             !response.data?.Telegram ||
@@ -108,7 +109,6 @@ export default function AllBlogs() {
           );
         } catch (error) {
           console.error("Error fetching user details:", error);
-          toast.error("Error fetching user details");
         }
       }
     }
@@ -239,7 +239,7 @@ export default function AllBlogs() {
               🤫 <hr className="mx-2 h-4 w-px shrink-0 bg-gray-300" />{" "}
               <span
                 className={cn(
-                  `inline animate-gradient bg-gradient-to-r from-[#ff6b40] via-[#9c40ff] to-[#40afff] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`
+                  `z-50 inline animate-gradient bg-gradient-to-r from-[#ff6b40] via-[#9c40ff] to-[#40afff] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`
                 )}
               >
                 Exclusive Members Only
@@ -331,9 +331,9 @@ export default function AllBlogs() {
                     </CardContent>
                     <CardFooter className="flex justify-between">
                       <Button
-                        className=""
+                        className="rounded-full"
                         variant="ghost"
-                        size="icon"
+                        size="sm"
                         onClick={() => handleLike(post.id, index)}
                       >
                         <Heart

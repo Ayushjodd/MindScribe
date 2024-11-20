@@ -275,7 +275,7 @@ export default function UserProfilePage() {
               <div className="flex text-xl gap-4 items-center">
                 {userData?.twitter && (
                   <FaXTwitter
-                    className="hover:text-blue-600 cursor-pointer  text-black dark:text-white"
+                    className="dark:hover:text-blue-600 hover:text-blue-600 cursor-pointer  text-black dark:text-white"
                     onClick={() => {
                       window.open(`https://x.com/${userData.twitter}`);
                     }}
@@ -284,7 +284,7 @@ export default function UserProfilePage() {
                 <Separator orientation="vertical" className="h-6 bg-gray-300" />
                 {userData?.linkedIn && (
                   <FaLinkedin
-                    className="hover:text-blue-600 cursor-pointer  text-black dark:text-white"
+                    className="hover:text-blue-600 dark:hover:text-blue-600 cursor-pointer  text-black dark:text-white"
                     onClick={() => {
                       window.open(userData?.linkedIn || "");
                     }}
@@ -293,7 +293,7 @@ export default function UserProfilePage() {
                 <Separator orientation="vertical" className="h-6 bg-gray-300" />
                 {userData?.personalWebsite && (
                   <FaLink
-                    className="hover:text-blue-600 cursor-pointer  text-black dark:text-white"
+                    className="hover:text-blue-600 cursor-pointer dark:hover:text-blue-600  text-black dark:text-white"
                     onClick={() => {
                       window.open(userData?.personalWebsite || "");
                     }}

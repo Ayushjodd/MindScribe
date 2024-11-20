@@ -100,7 +100,7 @@ export default function BlogPost() {
       if (res.data.message.includes("added")) {
         toast.success("Blog bookmarked");
       } else {
-        toast.success("Bookmark removed");
+        toast("Bookmark removed", { icon: "🗑" });
       }
     } catch (e) {
       console.error("Error bookmarking the blog:", e);
