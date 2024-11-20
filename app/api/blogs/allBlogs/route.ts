@@ -19,6 +19,7 @@ export async function GET() {
 
     const blogs = await prisma.blog.findMany({
       select: {
+        claps: true,
         id: true,
         title: true,
         description: true,

@@ -82,7 +82,7 @@ export default function AllBlogs() {
       toast.error("Login required");
       router.push("/signup");
     }
-  }, [session]);
+  }, [session, router]);
 
   useEffect(() => {
     async function fetchUserDetails() {

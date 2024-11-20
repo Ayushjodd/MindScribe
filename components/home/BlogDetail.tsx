@@ -22,6 +22,7 @@ import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { useSession } from "next-auth/react";
 
 interface BlogPost {
+  claps: number;
   title: string;
   author: Author;
   date: string;
@@ -31,6 +32,7 @@ interface BlogPost {
   imageUrl: string;
   createdAt: string;
   likes: number;
+  id: string;
 }
 
 interface Author {
@@ -59,7 +61,7 @@ const calculateReadingTime = (content: string) => {
 };
 
 export default function BlogPost() {
-  const [claps, setClaps] = useState(0);
+  const [claps, setClaps] = useState<number>(0);
   const [isFollowing, setIsFollowing] = useState(false);
   const [blogData, setBlogData] = useState<BlogPost | null>(null);
   const { id } = useParams();
@@ -69,14 +71,26 @@ export default function BlogPost() {
   useEffect(() => {
     async function fetchData() {
       const data = await axios.get(`/api/blogs/${id}`);
-      setBlogData(data.data?.blog);
+      const blog = data.data.blog;
       console.log(data);
+      setBlogData(blog);
+      setClaps(blog?.claps);
     }
     fetchData();
   }, [id]);
 
   if (!blogData) {
     return;
+  }
+
+  async function handleClap(blogId: string) {
+    try {
+      const res = await axios.post("/api/blogs/clap", { blogId });
+      console.log(res);
+      setClaps(res.data.claps);
+    } catch (e) {
+      console.log("error caught during clap");
+    }
   }
 
   async function handleFollow() {
@@ -229,7 +243,7 @@ export default function BlogPost() {
                   <Button
                     variant="outline"
                     size="lg"
-                    onClick={() => setClaps(claps + 1)}
+                    onClick={() => handleClap(blogData.id)}
                   >
                     👏 {claps}
                   </Button>

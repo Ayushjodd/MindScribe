@@ -30,6 +30,7 @@ export async function GET(
         id: blogId,
       },
       select: {
+        claps: true,
         id: true,
         title: true,
         description: true,

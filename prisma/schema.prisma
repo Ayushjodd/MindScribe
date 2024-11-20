@@ -48,6 +48,7 @@ model Blog {
   likedBy     Like[]
   bookmarks   Bookmark[]
   category    String?
+  claps       Int        @default(0)
 }
 
 model Membership {
