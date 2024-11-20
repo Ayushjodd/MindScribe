@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Grid, Heart, MessageCircle } from "lucide-react";
+import { Grid, Heart } from "lucide-react";
 import Image from "next/image";
 import NavBar from "@/components/shared/NavBar";
 import { useParams, useRouter } from "next/navigation";

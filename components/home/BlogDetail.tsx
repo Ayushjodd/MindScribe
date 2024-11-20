@@ -8,7 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/seperator";
-import { Bookmark, MessageCircle } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import NavBar from "@/components/shared/NavBar";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";

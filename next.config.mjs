@@ -13,7 +13,7 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
-    domains: ["uploadthing.com", "utfs.io"],
+    domains: ["uploadthing.com", "utfs.io", "i.pinimg.com"],
   },
   reactStrictMode: true,
   swcMinify: true,

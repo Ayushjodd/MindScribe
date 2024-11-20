@@ -253,8 +253,12 @@ export default function AllBlogs() {
               <div key={post.id}>
                 <Card className="overflow-hidden lg:flex">
                   <div className="w-full ">
-                    <div className="w-full h-96 flex text-gray-500">
-                      <img src={post.imageUrl || ""} alt={post.title} />
+                    <div className="w-full  overflow-hidden items-center justify-center h-96 flex text-gray-500">
+                      <img
+                        className="w-full h-full object-cover"
+                        src={post.imageUrl || ""}
+                        alt={post.title}
+                      />
                     </div>
                   </div>
 
