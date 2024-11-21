@@ -140,7 +140,6 @@ export default function UserProfilePage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [activeTab, setActiveTab] = useState("posts");
   const [userData, setUserData] = useState<User>(defaultUserData);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
@@ -173,7 +172,6 @@ export default function UserProfilePage() {
       if (!params?.id) return;
 
       try {
-        setLoading(true);
         const response = await axios.get<User>(
           `/api/user/get-user-info/${params.id}`
         );
@@ -182,8 +180,6 @@ export default function UserProfilePage() {
       } catch (err) {
         setError("Failed to load user data");
         console.error("Error fetching user data:", err);
-      } finally {
-        setLoading(false);
       }
     };
 

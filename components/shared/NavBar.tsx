@@ -13,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useRouter } from "next/navigation";
 import { FaRegBookmark } from "react-icons/fa6";
 import { FaRegUser } from "react-icons/fa";
 import { PiSignOutBold } from "react-icons/pi";
@@ -21,7 +20,6 @@ import DarkModeToggleV2 from "../ui/Toggle";
 
 const NavBar = () => {
   const { data: session } = useSession();
-  const router = useRouter();
   const { setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 

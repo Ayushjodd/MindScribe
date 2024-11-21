@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { RainbowButton } from "../magicui/RaindowButton";
-import { useRouter } from "next/navigation";
 import { ArrowRightIcon, ChevronRight } from "lucide-react";
 import Safari from "../ui/safari";
 import { BorderBeam } from "../ui/BorderBeam";
@@ -13,8 +12,6 @@ import { StarsBackground } from "../ui/stars-background";
 import Link from "next/link";
 
 const Hero = () => {
-  const router = useRouter();
-
   return (
     <>
       <section className="relative w-full py-12 md:py-24 lg:py-32 xl:py-32 min-h-screen flex items-center justify-center dark:bg-black bg-white">
