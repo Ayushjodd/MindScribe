@@ -293,7 +293,7 @@ export default function AllBlogs() {
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-center space-x-3 select-none">
-                        {post.author?.membership.type === "ADVANCE" && (
+                        {post.author?.membership?.type === "ADVANCE" && (
                           <CoolMode>
                             <Avatar className="cursor-pointer select-none">
                               <AvatarImage
@@ -309,7 +309,7 @@ export default function AllBlogs() {
                           </CoolMode>
                         )}
 
-                        {post.author?.membership.type === "PRO" && (
+                        {post.author?.membership?.type === "PRO" && (
                           <CoolMode
                             options={{
                               particle:
@@ -330,26 +330,29 @@ export default function AllBlogs() {
                           </CoolMode>
                         )}
 
-                        {post.author.membership.type === "BASIC" && (
-                          <Avatar>
-                            <AvatarImage
-                              src={
-                                post.author.profilePicture || post.author.image
-                              }
-                            />
-                            <AvatarFallback>
-                              {post.author.name[0]}
-                            </AvatarFallback>
-                          </Avatar>
-                        )}
+                        {post.author?.membership?.type === "BASIC" ||
+                          post.author?.membership?.type === "null" ||
+                          (post.author?.membership?.type === "undefined" && (
+                            <Avatar>
+                              <AvatarImage
+                                src={
+                                  post.author.profilePicture ||
+                                  post.author.image
+                                }
+                              />
+                              <AvatarFallback>
+                                {post.author.name[0]}
+                              </AvatarFallback>
+                            </Avatar>
+                          ))}
 
                         <div>
                           <Link href={`/user/${post.author.id}`}>
                             <p
                               className={`hover:underline cursor-pointer text-sm font-medium ${
-                                post.author.membership?.type === "ADVANCE"
+                                post.author?.membership?.type === "ADVANCE"
                                   ? "text-yellow-500"
-                                  : post.author.membership?.type === "PRO"
+                                  : post.author?.membership?.type === "PRO"
                                   ? "text-blue-500"
                                   : "dark:text-white text-black "
                               }`}
