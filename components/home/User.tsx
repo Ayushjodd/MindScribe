@@ -31,7 +31,6 @@ import {
 import { IoDiamond } from "react-icons/io5";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { useSession } from "next-auth/react";
-import { ShimmerButton } from "../ui/SertBtn";
 import Link from "next/link";
 
 interface Post {
