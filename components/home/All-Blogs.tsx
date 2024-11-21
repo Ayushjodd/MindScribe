@@ -29,9 +29,6 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { IoDiamond } from "react-icons/io5";
-import { FaCrown } from "react-icons/fa";
-import { AnimatedGradientText } from "../ui/MagicUiAnimatedBtn";
-import { cn } from "@/lib/utils";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { CoolMode } from "../ui/cool-mode";
 import Image from "next/image";
@@ -52,6 +49,23 @@ interface Author {
   name: string;
   image: string;
   profilePicture: string | null;
+  membership: {
+    type: string;
+  } | null;
+}
+
+interface User {
+  id: string;
+  username: string;
+  name: string;
+  email: string;
+  imageUrl: string;
+  profilePicture: string;
+  bio: string | null;
+  twitter: string | null;
+  linkedIn: string | null;
+  personalWebsite: string | null;
+  Telegram: string | null;
   membership: {
     type: string;
   } | null;
@@ -78,6 +92,7 @@ export default function AllBlogs() {
   const [bookmarkedBlogs, setBookmarkedBlogs] = useState<string[]>([]);
   const [likedBlogs, setLikedBlogs] = useState<string[]>([]);
   const [profile, setProfile] = useState<boolean>(true);
+  const [userData, setUserData] = useState<User>();
 
   useEffect(() => {
     if (session.status === "loading") return;
@@ -94,6 +109,10 @@ export default function AllBlogs() {
           const response = await axios.get(
             `/api/user/get-user-info/${session.data?.user.id}`
           );
+          if (response) {
+            setUserData(response.data);
+          }
+          console.log(response.data);
           if (
             !response.data?.Telegram ||
             !response.data?.bio ||
@@ -190,6 +209,10 @@ export default function AllBlogs() {
     return matchesSearch && matchesCategory && matchesExclusive;
   });
 
+  if (!userData) {
+    return;
+  }
+
   return (
     <>
       <Toaster />
@@ -226,7 +249,7 @@ export default function AllBlogs() {
             </div>
 
             <Select onValueChange={handleCategoryChange} defaultValue="all">
-              <SelectTrigger className="w-[180px] text-black dark:text-white">
+              <SelectTrigger className="w-[180px] text-black dark:text-white z-50">
                 <SelectValue placeholder="Select Category" />
               </SelectTrigger>
               <SelectContent>
@@ -238,7 +261,7 @@ export default function AllBlogs() {
                 ))}
               </SelectContent>
             </Select>
-            <AnimatedGradientText className="z-40 cursor-pointer">
+            {/* <AnimatedGradientText className="z-40 cursor-pointer">
               🤫 <hr className="mx-2 h-4 w-px shrink-0 bg-gray-300" />{" "}
               <span
                 className={cn(
@@ -248,7 +271,19 @@ export default function AllBlogs() {
                 Exclusive Members Only
               </span>
               <FaCrown className="ml-1 size-4 text-[#e5c56d] transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
-            </AnimatedGradientText>
+            </AnimatedGradientText> */}
+
+            {userData.membership?.type === "BASIC" ||
+            userData.membership === null ? (
+              <Link href={"/membership"}>
+                <Button className="text-blue-600 z-50 gap-1">
+                  Get Verified
+                  <RiVerifiedBadgeFill />
+                </Button>
+              </Link>
+            ) : (
+              <></>
+            )}
           </div>
 
           <div className="space-y-6">
