@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/seperator";
 import { Bookmark } from "lucide-react";
 import NavBar from "@/components/shared/NavBar";
 import axios from "axios";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { BsTwitterX } from "react-icons/bs";
 import { FaLinkedin } from "react-icons/fa";
 import { FaTelegramPlane } from "react-icons/fa";
@@ -67,7 +67,6 @@ export default function BlogPost() {
   const [isFollowing, setIsFollowing] = useState(false);
   const [blogData, setBlogData] = useState<BlogPost | null>(null);
   const { id } = useParams();
-  const router = useRouter();
   const session = useSession();
 
   useEffect(() => {
