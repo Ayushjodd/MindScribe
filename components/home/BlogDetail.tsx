@@ -21,6 +21,7 @@ import { IoDiamond } from "react-icons/io5";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { useSession } from "next-auth/react";
 import toast, { Toaster } from "react-hot-toast";
+import Link from "next/link";
 
 interface BlogPost {
   claps: number;
@@ -150,32 +151,31 @@ export default function BlogPost() {
                 </Avatar>
                 <div>
                   <h2 className="text-lg font-semibold">
-                    <p
-                      onClick={() => {
-                        router.push(`/user/${blogData.author.id}`);
-                      }}
-                      className={`hover:underline cursor-pointer  font-medium ${
-                        blogData.author.membership?.type === "ADVANCE"
-                          ? "text-yellow-500"
-                          : blogData.author.membership?.type === "PRO"
-                          ? "text-blue-500"
-                          : "text-white"
-                      }`}
-                    >
-                      {blogData.author.name || blogData.author.username}
-                      {blogData.author.membership?.type === "ADVANCE" && (
-                        <RiVerifiedBadgeFill
-                          className="inline ml-1 text-yellow-500"
-                          title="Gold Verified"
-                        />
-                      )}
-                      {blogData.author.membership?.type === "PRO" && (
-                        <IoDiamond
-                          className="inline ml-1 text-blue-500"
-                          title="Pro Member"
-                        />
-                      )}
-                    </p>
+                    <Link href={`/user/${blogData.author.id}`}>
+                      <p
+                        className={`hover:underline cursor-pointer  font-medium ${
+                          blogData.author.membership?.type === "ADVANCE"
+                            ? "text-yellow-500"
+                            : blogData.author.membership?.type === "PRO"
+                            ? "text-blue-500"
+                            : "text-white"
+                        }`}
+                      >
+                        {blogData.author.name || blogData.author.username}
+                        {blogData.author.membership?.type === "ADVANCE" && (
+                          <RiVerifiedBadgeFill
+                            className="inline ml-1 text-yellow-500"
+                            title="Gold Verified"
+                          />
+                        )}
+                        {blogData.author.membership?.type === "PRO" && (
+                          <IoDiamond
+                            className="inline ml-1 text-blue-500"
+                            title="Pro Member"
+                          />
+                        )}
+                      </p>
+                    </Link>
                   </h2>
                   <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                     <span>
@@ -287,32 +287,31 @@ export default function BlogPost() {
                 <div>
                   <h3 className="text-lg font-semibold flex gap-2">
                     Written by{" "}
-                    <p
-                      onClick={() => {
-                        router.push(`/user/${blogData.author.id}`);
-                      }}
-                      className={`hover:underline cursor-pointer  font-medium ${
-                        blogData.author.membership?.type === "ADVANCE"
-                          ? "text-yellow-500"
-                          : blogData.author.membership?.type === "PRO"
-                          ? "text-blue-500"
-                          : "text-white"
-                      }`}
-                    >
-                      {blogData.author.name || blogData.author.username}
-                      {blogData.author.membership?.type === "ADVANCE" && (
-                        <RiVerifiedBadgeFill
-                          className="inline ml-1 text-yellow-500"
-                          title="Gold Verified"
-                        />
-                      )}
-                      {blogData.author.membership?.type === "PRO" && (
-                        <IoDiamond
-                          className="inline ml-1 text-blue-500"
-                          title="Pro Member"
-                        />
-                      )}
-                    </p>
+                    <Link href={`/user/${blogData.author.id}`}>
+                      <p
+                        className={`hover:underline cursor-pointer  font-medium ${
+                          blogData.author.membership?.type === "ADVANCE"
+                            ? "text-yellow-500"
+                            : blogData.author.membership?.type === "PRO"
+                            ? "text-blue-500"
+                            : "text-white"
+                        }`}
+                      >
+                        {blogData.author.name || blogData.author.username}
+                        {blogData.author.membership?.type === "ADVANCE" && (
+                          <RiVerifiedBadgeFill
+                            className="inline ml-1 text-yellow-500"
+                            title="Gold Verified"
+                          />
+                        )}
+                        {blogData.author.membership?.type === "PRO" && (
+                          <IoDiamond
+                            className="inline ml-1 text-blue-500"
+                            title="Pro Member"
+                          />
+                        )}
+                      </p>
+                    </Link>
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 mb-2">
                     {blogData.author.bio}

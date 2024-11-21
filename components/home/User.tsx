@@ -194,17 +194,6 @@ export default function UserProfilePage() {
 
   if (!mounted) return null;
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-        <NavBar />
-        <div className="container mx-auto px-4 py-8 text-center">
-          Loading...
-        </div>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="min-h-screen bg-gray-100 dark:bg-gray-900">

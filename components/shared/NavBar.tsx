@@ -80,30 +80,26 @@ const NavBar = () => {
                     </Avatar>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        router.push(`/user/${session.user.id}`);
-                      }}
-                    >
-                      <div className="flex">
-                        <span className="mr-2 text-lg">
-                          <FaRegUser />
-                        </span>
-                        Profile
-                      </div>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        router.push("/bookmarks");
-                      }}
-                    >
-                      <div className="flex">
-                        <span className="mr-2 text-lg">
-                          <FaRegBookmark />
-                        </span>
-                        BookMarks
-                      </div>
-                    </DropdownMenuItem>
+                    <Link href={`/user/${session.user.id}`}>
+                      <DropdownMenuItem>
+                        <div className="flex">
+                          <span className="mr-2 text-lg">
+                            <FaRegUser />
+                          </span>
+                          Profile
+                        </div>
+                      </DropdownMenuItem>
+                    </Link>
+                    <Link href="/bookmarks">
+                      <DropdownMenuItem>
+                        <div className="flex">
+                          <span className="mr-2 text-lg">
+                            <FaRegBookmark />
+                          </span>
+                          BookMarks
+                        </div>
+                      </DropdownMenuItem>
+                    </Link>
                     <DropdownMenuItem onClick={() => signOut()}>
                       <div className="flex">
                         <span className="mr-2 text-lg">
@@ -115,12 +111,9 @@ const NavBar = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Button
-                  onClick={() => router.push("/signup")}
-                  variant="outline"
-                >
-                  Log in
-                </Button>
+                <Link href="/signup">
+                  <Button variant="outline">Log in</Button>
+                </Link>
               )}
             </div>
 

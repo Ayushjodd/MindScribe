@@ -36,18 +36,21 @@ export default function BookmarksPage() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [refetch, setRefetch] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     async function fetchBookmarks() {
       try {
+        setLoading(true);
         const response = await axios.get("/api/blogs/bookmark");
-        console.log(response);
         const bookmarkData = Array.isArray(response.data.bookmarks)
           ? response.data.bookmarks
           : [];
         setBookmarks(bookmarkData);
       } catch (error) {
         console.error("Error fetching bookmarks:", error);
+      } finally {
+        setLoading(false);
       }
     }
     fetchBookmarks();
@@ -75,6 +78,10 @@ export default function BookmarksPage() {
       bookmark.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       bookmark.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">

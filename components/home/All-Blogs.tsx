@@ -34,6 +34,7 @@ import { AnimatedGradientText } from "../ui/MagicUiAnimatedBtn";
 import { cn } from "@/lib/utils";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { CoolMode } from "../ui/cool-mode";
+import Image from "next/image";
 
 const categories = [
   "Programming",
@@ -254,11 +255,14 @@ export default function AllBlogs() {
               <div key={post.id}>
                 <Card className="overflow-hidden lg:flex">
                   <div className="w-full ">
-                    <div className="w-full  overflow-hidden items-center justify-center h-96 flex text-gray-500">
-                      <img
+                    <div className="w-full relative  overflow-hidden items-center justify-center h-96 flex text-gray-500">
+                      <Image
                         className="w-full h-full object-cover"
                         src={post.imageUrl || ""}
                         alt={post.title}
+                        layout="fill"
+                        objectFit="cover"
+                        priority
                       />
                     </div>
                   </div>
@@ -340,32 +344,31 @@ export default function AllBlogs() {
                         )}
 
                         <div>
-                          <p
-                            onClick={() =>
-                              router.push(`/user/${post.author.id}`)
-                            }
-                            className={`hover:underline cursor-pointer text-sm font-medium ${
-                              post.author.membership?.type === "ADVANCE"
-                                ? "text-yellow-500"
-                                : post.author.membership?.type === "PRO"
-                                ? "text-blue-500"
-                                : "dark:text-white text-black "
-                            }`}
-                          >
-                            {post.author.name || post.author.username}
-                            {post.author.membership?.type === "ADVANCE" && (
-                              <RiVerifiedBadgeFill
-                                className="inline ml-1 text-yellow-500"
-                                title="Gold Verified"
-                              />
-                            )}
-                            {post.author.membership?.type === "PRO" && (
-                              <IoDiamond
-                                className="inline ml-1 text-blue-500"
-                                title="Pro Member"
-                              />
-                            )}
-                          </p>
+                          <Link href={`/user/${post.author.id}`}>
+                            <p
+                              className={`hover:underline cursor-pointer text-sm font-medium ${
+                                post.author.membership?.type === "ADVANCE"
+                                  ? "text-yellow-500"
+                                  : post.author.membership?.type === "PRO"
+                                  ? "text-blue-500"
+                                  : "dark:text-white text-black "
+                              }`}
+                            >
+                              {post.author.name || post.author.username}
+                              {post.author.membership?.type === "ADVANCE" && (
+                                <RiVerifiedBadgeFill
+                                  className="inline ml-1 text-yellow-500"
+                                  title="Gold Verified"
+                                />
+                              )}
+                              {post.author.membership?.type === "PRO" && (
+                                <IoDiamond
+                                  className="inline ml-1 text-blue-500"
+                                  title="Pro Member"
+                                />
+                              )}
+                            </p>
+                          </Link>
                           <p className="text-xs text-gray-500">
                             {new Date(post.createdAt).toLocaleDateString()}
                           </p>

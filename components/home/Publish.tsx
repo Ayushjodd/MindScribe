@@ -30,7 +30,7 @@ import axios from "axios";
 import confetti from "canvas-confetti";
 import { Toaster } from "@/components/ui/toaster";
 import { Badge } from "../ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useSession } from "next-auth/react";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { IoDiamond } from "react-icons/io5";

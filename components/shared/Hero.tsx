@@ -10,6 +10,7 @@ import { AnimatedGradientText } from "../ui/MagicUiAnimatedBtn";
 import { cn } from "@/lib/utils";
 import { ShootingStars } from "../ui/shooting-stars";
 import { StarsBackground } from "../ui/stars-background";
+import Link from "next/link";
 
 const Hero = () => {
   const router = useRouter();
@@ -19,22 +20,21 @@ const Hero = () => {
       <section className="relative w-full py-12 md:py-24 lg:py-32 xl:py-32 min-h-screen flex items-center justify-center dark:bg-black bg-white">
         <div className="container relative z-10 px-4 md:px-6 mt-32">
           <div className="flex flex-col items-center space-y-4 text-center">
-            <span
-              className="cursor-pointer"
-              onClick={() => router.push("/membership")}
-            >
-              <AnimatedGradientText>
-                🎉 <hr className="mx-2 h-4 w-px shrink-0 bg-gray-300" />{" "}
-                <span
-                  className={cn(
-                    `inline animate-gradient bg-gradient-to-r from-[#ff6b40] via-[#9c40ff] to-[#40afff] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`
-                  )}
-                >
-                  Introducing Memberships
-                </span>
-                <ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
-              </AnimatedGradientText>
-            </span>
+            <Link href="/membership">
+              <span className="cursor-pointer">
+                <AnimatedGradientText>
+                  🎉 <hr className="mx-2 h-4 w-px shrink-0 bg-gray-300" />{" "}
+                  <span
+                    className={cn(
+                      `inline animate-gradient bg-gradient-to-r from-[#ff6b40] via-[#9c40ff] to-[#40afff] bg-[length:var(--bg-size)_100%] bg-clip-text text-transparent`
+                    )}
+                  >
+                    Introducing Memberships
+                  </span>
+                  <ChevronRight className="ml-1 size-3 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
+                </AnimatedGradientText>
+              </span>
+            </Link>
             <div className="space-y-2">
               <h1 className="text-4xl font-bold sm:text-5xl md:text-6xl lg:text-8xl/none tracking-tight text-black dark:text-white whitespace-nowrap">
                 Welcome to{" "}
@@ -52,16 +52,14 @@ const Hero = () => {
             </div>
 
             <div className="space-y-4 sm:space-y-0 sm:space-x-4 pb-32 z-10">
-              <RainbowButton
-                onClick={() => {
-                  router.push("/blogs");
-                }}
-              >
-                Start Reading
-                <span>
-                  <ArrowRightIcon className="ml-1 size-4 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
-                </span>
-              </RainbowButton>
+              <Link href="/blogs">
+                <RainbowButton>
+                  Start Reading
+                  <span>
+                    <ArrowRightIcon className="ml-1 size-4 transition-transform duration-300 ease-in-out group-hover:translate-x-0.5" />
+                  </span>
+                </RainbowButton>
+              </Link>
             </div>
 
             <div className="relative w-full flex justify-center mt-48">
