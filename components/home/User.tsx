@@ -31,6 +31,8 @@ import {
 import { IoDiamond } from "react-icons/io5";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
 import { useSession } from "next-auth/react";
+import { ShimmerButton } from "../ui/SertBtn";
+import Link from "next/link";
 
 interface Post {
   id: string;
@@ -250,6 +252,19 @@ export default function UserProfilePage() {
                 >
                   {isFollowing ? "unfollow" : "Follow"}
                 </Button>
+              )}
+
+              {session.data?.user.id === userData.id ? (
+                <Link href={"/profile"}>
+                  <Button
+                    size={"sm"}
+                    className="bg-[#363737] text-white hover:bg-[#1f2020]"
+                  >
+                    Edit profile
+                  </Button>
+                </Link>
+              ) : (
+                <></>
               )}
             </div>
             <p className="text-gray-600 dark:text-gray-400 mb-4">

@@ -396,10 +396,11 @@ export default function AllBlogs() {
                           <span className="text-xs ml-1">{post.likes}</span>
                         )}
                       </Button>
-
-                      <Button className="z-40" variant="default" size="lg">
-                        <Link href={`/blog/${post.id}`}>Read More</Link>
-                      </Button>
+                      <Link href={`/blog/${post.id}`}>
+                        <Button className="z-50" variant="default" size="lg">
+                          Read More
+                        </Button>
+                      </Link>
                     </CardFooter>
                   </div>
                 </Card>
