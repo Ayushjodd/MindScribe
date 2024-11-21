@@ -33,6 +33,7 @@ import { FaCrown } from "react-icons/fa";
 import { AnimatedGradientText } from "../ui/MagicUiAnimatedBtn";
 import { cn } from "@/lib/utils";
 import { FaArrowRightLong } from "react-icons/fa6";
+import { CoolMode } from "../ui/cool-mode";
 
 const categories = [
   "Programming",
@@ -287,15 +288,57 @@ export default function AllBlogs() {
                       <CardDescription>{post.description}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="flex items-center space-x-3">
-                        <Avatar>
-                          <AvatarImage
-                            src={
-                              post?.author?.profilePicture || post.author.image
-                            }
-                          />
-                          <AvatarFallback>{post.author.name[0]}</AvatarFallback>
-                        </Avatar>
+                      <div className="flex items-center space-x-3 select-none">
+                        {post.author?.membership.type === "ADVANCE" && (
+                          <CoolMode>
+                            <Avatar className="cursor-pointer select-none">
+                              <AvatarImage
+                                src={
+                                  post?.author?.profilePicture ||
+                                  post.author.image
+                                }
+                              />
+                              <AvatarFallback>
+                                {post.author.name[0]}
+                              </AvatarFallback>
+                            </Avatar>
+                          </CoolMode>
+                        )}
+
+                        {post.author?.membership.type === "PRO" && (
+                          <CoolMode
+                            options={{
+                              particle:
+                                "https://images.emojiterra.com/google/noto-emoji/unicode-15.1/color/1024px/1f5ff.png",
+                            }}
+                          >
+                            <Avatar className="cursor-pointer select-none">
+                              <AvatarImage
+                                src={
+                                  post?.author?.profilePicture ||
+                                  post.author.image
+                                }
+                              />
+                              <AvatarFallback>
+                                {post.author.name[0]}
+                              </AvatarFallback>
+                            </Avatar>
+                          </CoolMode>
+                        )}
+
+                        {post.author.membership.type === "BASIC" && (
+                          <Avatar>
+                            <AvatarImage
+                              src={
+                                post.author.profilePicture || post.author.image
+                              }
+                            />
+                            <AvatarFallback>
+                              {post.author.name[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
+
                         <div>
                           <p
                             onClick={() =>
