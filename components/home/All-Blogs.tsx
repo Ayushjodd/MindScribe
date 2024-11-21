@@ -54,7 +54,7 @@ interface Author {
   profilePicture: string | null;
   membership: {
     type: string;
-  };
+  } | null;
 }
 
 interface Blog {
@@ -122,6 +122,7 @@ export default function AllBlogs() {
     async function fetchData() {
       try {
         const blogsResponse = await axios.get("/api/blogs/allBlogs");
+        console.log(blogsResponse);
         if (blogsResponse.status === 200) {
           setBlogs(blogsResponse.data.blogs);
         }
@@ -331,20 +332,20 @@ export default function AllBlogs() {
                         )}
 
                         {post.author?.membership?.type === "BASIC" ||
-                          post.author?.membership?.type === "null" ||
-                          (post.author?.membership?.type === "undefined" && (
-                            <Avatar>
-                              <AvatarImage
-                                src={
-                                  post.author.profilePicture ||
-                                  post.author.image
-                                }
-                              />
-                              <AvatarFallback>
-                                {post.author.name[0]}
-                              </AvatarFallback>
-                            </Avatar>
-                          ))}
+                        post.author?.membership === null ? (
+                          <Avatar>
+                            <AvatarImage
+                              src={
+                                post.author.profilePicture || post.author.image
+                              }
+                            />
+                            <AvatarFallback>
+                              {post.author.name[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                        ) : (
+                          <> </>
+                        )}
 
                         <div>
                           <Link href={`/user/${post.author.id}`}>

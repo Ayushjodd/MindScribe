@@ -26,7 +26,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import { IoDiamond } from "react-icons/io5";
 import { RiVerifiedBadgeFill } from "react-icons/ri";
@@ -176,7 +175,6 @@ export default function UserProfilePage() {
         const response = await axios.get<User>(
           `/api/user/get-user-info/${params.id}`
         );
-        console.log(response);
         setUserData(response.data);
       } catch (err) {
         setError("Failed to load user data");
@@ -265,6 +263,17 @@ export default function UserProfilePage() {
               ) : (
                 <></>
               )}
+
+              {userData.membership?.type === "BASIC" ||
+              userData.membership === null ? (
+                <Link href={"/membership"}>
+                  <Button className="" size={"sm"}>
+                    Get Verified
+                  </Button>
+                </Link>
+              ) : (
+                <></>
+              )}
             </div>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
               {userData?.bio}
@@ -307,14 +316,14 @@ export default function UserProfilePage() {
                 posts
               </div>
               <Sheet>
-                <SheetTrigger asChild>
-                  <div className="cursor-pointer">
-                    <span className="font-bold">
-                      {userData?.stats?.followers}
-                    </span>{" "}
-                    followers
-                  </div>
-                </SheetTrigger>
+                {/* <SheetTrigger asChild>
+                  <div className="cursor-pointer"> */}
+                <span className="font-bold pr-1">
+                  {userData?.stats?.followers}
+                </span>{" "}
+                followers
+                {/* </div>
+                </SheetTrigger> */}
                 <SheetContent>
                   <SheetHeader>
                     <SheetTitle>Followers</SheetTitle>
@@ -346,14 +355,14 @@ export default function UserProfilePage() {
                 </SheetContent>
               </Sheet>
               <Sheet>
-                <SheetTrigger asChild>
-                  <div className="cursor-pointer">
-                    <span className="font-bold">
-                      {userData.stats.following}
-                    </span>{" "}
-                    following
-                  </div>
-                </SheetTrigger>
+                {/* <SheetTrigger asChild>
+                  <div className="cursor-pointer"> */}
+                <span className="font-bold pr-1">
+                  {userData.stats.following}
+                </span>{" "}
+                following
+                {/* </div>
+                </SheetTrigger> */}
                 <SheetContent>
                   <SheetHeader>
                     <SheetTitle>Following</SheetTitle>
