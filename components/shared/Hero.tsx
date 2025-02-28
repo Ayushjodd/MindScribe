@@ -33,16 +33,16 @@ const Hero = () => {
               </span>
             </Link>
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold sm:text-5xl md:text-6xl lg:text-8xl/none tracking-tight text-black dark:text-white whitespace-nowrap">
+              <h1 className="text-3xl font-bold sm:text-4xl md:text-5xl lg:text-7xl tracking-tight text-black dark:text-white">
                 Welcome to{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-600 animate-gradient-x">
                   <BlurIn
-                    className="lg:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-600 animate-gradient-x inline-block"
+                    className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-pink-600 animate-gradient-x inline-block"
                     word="MindScribe"
                   />
                 </span>
               </h1>
-              <p className="mx-auto max-w-[700px] text-[#9ea3ae] md:text-xl lg:text-2xl pt-3 pb-8">
+              <p className="mx-auto max-w-[700px] text-[#9ea3ae] text-base sm:text-lg md:text-xl lg:text-2xl pt-3 pb-8">
                 Discover, write, and connect with a community of passionate
                 readers and writers.
               </p>
